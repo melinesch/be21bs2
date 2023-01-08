@@ -92,19 +92,17 @@ def addUser():
     nom = request.form["nom"]
     prenom = request.form["prenom"]
     mail = request.form["mail"]
+    print(nom + " " + prenom + " " + mail)
     newMdp = 2
-    pwd = ''
-    for i in range(pwd_length):
-        pwd += ''.join(secrets.choice(alphabet))
-        print(pwd)
+    motPasse = ''
+    for i in range(10):
+        motPasse += ''.join(secrets.choice(alphabet))
+    print(motPasse)
     login = request.form["login"]
-    statut = request.form["statut"]
-    a = randint(1,2)
-    if a==1 : 
-        avatar="img1.png"
-    else : 
-        avatar="img2.png"
-    msg, lastId = bdd.add_userData(nom,prenom,mail,motPasse,newMdp,login,statut, avatar)
+    statut = int(request.form["statut"])
+    a = randint(1, 16)
+    avatar = "" + str(a) + ".png"
+    msg, lastId = bdd.add_userData(nom,prenom,mail,login,motPasse,statut, newMdp, avatar)
     print(msg)
     return redirect ("/compte/" +msg)
     

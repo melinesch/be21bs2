@@ -86,8 +86,10 @@ def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
     try:
         cnx,error=connexion()
         cursor=cnx.cursor()
-        sql="INSERT into identification (nom, prenom, mail, login, motPasse, statut, newMdp, avatar) VALUES (%s, %s);"
-        param=(nom,prenom,mail,login,pwd,statut, newMdp, avatar)
+        sql="INSERT into identification (idUser,nom,prenom,mail,login,motPasse,statut,newMdp,avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        param=(0,nom,prenom,mail,login,pwd,statut, newMdp, avatar)
+        print(sql)
+        print(param)
         cursor.execute(sql,param)
         #récupère le dernier IdUser généré par le serveur sql
         lastId=cursor.lastrowid
