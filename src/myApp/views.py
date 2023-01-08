@@ -3,6 +3,8 @@ from myApp.model import bdd
 import secrets
 import string
 from random import randint 
+import hashlib
+
 
 app = Flask(__name__)
 app.template_folder = "template"
@@ -97,12 +99,15 @@ def addUser():
     motPasse = ''
     for i in range(10):
         motPasse += ''.join(secrets.choice(alphabet))
-    print(motPasse)
     login = request.form["login"]
+    mdp = hashlib.sha256(motPasse.encode())
+    mdpC = mdp.hexdigest() #mot de passe chiffré
+    print(mdpC)
+    print("user password, to be sent to the user '" + login + "': " + motPasse)
     statut = int(request.form["statut"])
     a = randint(1, 16)
     avatar = "" + str(a) + ".png"
-    msg, lastId = bdd.add_userData(nom,prenom,mail,login,motPasse,statut, newMdp, avatar)
+    msg, lastId = bdd.add_userData(nom,prenom,mail,login,mdpC,statut, newMdp, avatar)
     print(msg)
     return redirect ("/compte/" +msg)
     
