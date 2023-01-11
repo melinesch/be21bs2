@@ -35,7 +35,7 @@ def previsions(infoMsg = "") :
 @app.route('/compte')
 @app.route('/compte/<infoMsg>')
 @app.route('/compte/<infoMsg>/<pwd>')
-def compte(infoMsg="",pwd=""):
+def compte(infoMsg="", pwd=""):
     return render_template("index.html", maPage = "compte.html", monTitre = "Création de compte", info=infoMsg, pwd=pwd)
 
 @app.route('/login')
@@ -121,4 +121,37 @@ def addUser():
 @app.route('/mdp/<infoMsg>')
 def mdp(infoMsg=""):
     return render_template("index.html", maPage = "mdp.html", monTitre = "Changer le mot de passe", info=infoMsg)
+
+#réception des données du formulaire de modification de mot de passe
+@app.route("/changeMdp", methods=['POST'])
+def changeMdp():
+    # Récupération des données du formulaire
+    oldMdp = request.form["oldMdp"]
+    mdp = request.form["mdp"]
+    confirmMdp = request.form["confirmMdp"]
+    
+    # Vérification de l'ancien mot de passe
+    verif, user = bdd.verifAuthData(session["login"], oldMdp)
+    if (verif != "authOK"):
+        return redirect("/mdp/" + msg)
+    
+    # Vérification de la cohérence de confirmation
+    if (mdp == "" or mdp != confirmMdp):
+        return redirect("/mdp/passwordNotMatched")
+    
+    # Actions d'enregistrement
+    newMdp = 0
+    
+    mdp = hashlib.sha256(mdp.encode())
+    mdpC = mdp.hexdigest() #mot de passe chiffré
+    print(confirmMdp)
+    print(mdpC)
+    print(session["idUser"])
+
+    msg = bdd.update_userData("motPasse", mdpC, session["idUser"])
+    print(msg)
+    msg2 = bdd.update_userData("newMdp", newMdp, session["idUser"])
+    print(msg2)
+    session["newMdp"] = 0
+    return redirect("/prevision/" + msg)
     

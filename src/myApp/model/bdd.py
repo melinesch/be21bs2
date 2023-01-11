@@ -102,7 +102,7 @@ def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
     return msg, lastId
 
 #modification d'un utilisateur
-def update_userData(champ,newValue,idUser):
+def update_userData(champ, newValue, idUser):
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()
@@ -112,6 +112,8 @@ def update_userData(champ,newValue,idUser):
         cnx.commit()
         close_bd(cursor, cnx)
         msg = "updateUserOK"
+        if (champ == "motPasse"):
+            msg = "updateUserMdpOK"
     except mysql.connector.Error as err:
         msg = "Failed update user data : {}".format(err)
     return msg
