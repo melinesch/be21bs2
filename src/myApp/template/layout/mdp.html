@@ -1,0 +1,27 @@
+Merci de modifier votre mot de passe
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-light rounded h-100 p-4">
+                <form action="/changeMdp" id="mdpform" method="POST">
+                    <div class="mb-3">
+                        <label for="oldMdp" class="form-label">Ancien mot de passe</label>
+                        <input type="text" class="form-control" id="oldMdp" name="oldMdp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mdp" class="form-label">Nouveau mot de passe</label>
+                        <input type="text" class="form-control" id="mdp" name="mdp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmMdp" class="form-label">Confirmer votre mot de passe</label>
+                        <input type="text" class="form-control" id="confirmMdp" name="confirmMdp">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

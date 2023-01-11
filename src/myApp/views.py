@@ -28,8 +28,9 @@ def webmaster():
     return render_template("index.html", maPage = "webmaster.html", monTitre = "Webmasters")
 
 @app.route('/prevision')
-def previsions():
-    return render_template("index.html", maPage = "prevision.html", monTitre = "Prévisions")
+@app.route('/prevision/<infoMsg>')
+def previsions(infoMsg = "") :
+    return render_template("index.html", maPage = "prevision.html", monTitre = "Prévisions", info = infoMsg)
 
 @app.route('/compte')
 @app.route('/compte/<infoMsg>')
@@ -62,9 +63,12 @@ def connecter():
         session["statut"]=user["statut"]
         session["mail"]=user["mail"]
         session["newMdp"]=user["newMdp"]
-    
+
+        if session["newMdp"] == 2:
+            return redirect("/mdp/authOK")
+            
         if session["statut"]==1:
-            return redirect("/accueil/authOK")
+            return redirect("/prevision/authOK")
         else:
             return redirect("/compte/authOK")
     
@@ -108,7 +112,13 @@ def addUser():
     statut = int(request.form["statut"])
     a = randint(1, 16)
     avatar = "" + str(a) + ".png"
-    msg, lastId = bdd.add_userData(nom,prenom,mail,login,mdpC,statut, newMdp, avatar)
+    msg, lastId = bdd.add_userData(nom, prenom, mail, login, mdpC, statut, newMdp, avatar)
     print(msg)
     return redirect ("/compte/" + msg + "/" + motPasse)
+
+#route nouveau mot de passe
+@app.route('/mdp')
+@app.route('/mdp/<infoMsg>')
+def mdp(infoMsg=""):
+    return render_template("index.html", maPage = "mdp.html", monTitre = "Changer le mot de passe", info=infoMsg)
     
