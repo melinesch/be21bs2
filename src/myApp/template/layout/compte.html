@@ -23,10 +23,6 @@ Création de compte
                         <label for="login" class="form-label">Identifiant</label>
                         <input type="text" class="form-control" name="login" id="login">
                     </div>
-                    <div class="mb-3">
-                        <label for="motPasse" class="form-label">Mot de Passe</label>
-                        <input type="text" class="form-control" name="MotPasse" id="motPasse">
-                    </div>
                 
                     <div class="form-floating mb-3">
                         <select class="form-select" name ="statut" id="statut">
@@ -40,7 +36,7 @@ Création de compte
                 </form>
                 {% if info and info =="addUserOK" %}
                     <div class="alert alert-success">
-                    <span class="badge badge-pill badge-success">Success</span>Nouveau membre inséré. 
+                    <span class="badge badge-pill badge-success">Success</span> Nouveau membre inséré. Mot de passe = {{pwd}}
                     </div>
                 {% endif %}         
             </div>

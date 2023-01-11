@@ -33,8 +33,9 @@ def previsions():
 
 @app.route('/compte')
 @app.route('/compte/<infoMsg>')
-def compte(infoMsg=""):
-    return render_template("index.html", maPage = "compte.html", monTitre = "Création de compte", info=infoMsg)
+@app.route('/compte/<infoMsg>/<pwd>')
+def compte(infoMsg="",pwd=""):
+    return render_template("index.html", maPage = "compte.html", monTitre = "Création de compte", info=infoMsg, pwd=pwd)
 
 @app.route('/login')
 @app.route('/login/<infoMsg>')
@@ -109,5 +110,5 @@ def addUser():
     avatar = "" + str(a) + ".png"
     msg, lastId = bdd.add_userData(nom,prenom,mail,login,mdpC,statut, newMdp, avatar)
     print(msg)
-    return redirect ("/compte/" +msg)
+    return redirect ("/compte/" + msg + "/" + motPasse)
     

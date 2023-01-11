@@ -100,3 +100,18 @@ def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
         lastId=None
         msg="Failed add user data:{}".format(err)
     return msg, lastId
+
+#modification d'un utilisateur
+def update_userData(champ,newValue,idUser):
+    try:
+        cnx, error = connexion()
+        cursor = cnx.cursor()
+        sql = "UPDATE identification SET " + champ + "= %s WHERE idUser = %s;"
+        param = (newValue, idUser)   
+        cursor.execute(sql, param)
+        cnx.commit()
+        close_bd(cursor, cnx)
+        msg = "updateUserOK"
+    except mysql.connector.Error as err:
+        msg = "Failed update user data : {}".format(err)
+    return msg
