@@ -1,0 +1,28 @@
+<h3>Données du fichier excel {{ fileName }}</h3>
+
+{% if vols %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Immatriculation</th>
+                <th>Départ</th>
+                <th>Arrivée</th>
+                <th>Tour de piste</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vol in vols %}
+            <tr>
+                <td>{{ vol.immat }}</td>
+                <td>{{ vol.depart.strftime('%A %d %B %Y') }}<br>{{ vol.depart.strftime('%H:%M') }}</td>
+                <td>{{ vol.arrivee.strftime('%A %d %B %Y') }}<br>{{ vol.arrivee.strftime('%H:%M') }}</td>
+                {% if vol["tour de piste"]|int == 1 %}
+                    <td>oui</td>
+                {% else %}
+                    <td>non</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}

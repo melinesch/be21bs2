@@ -4,7 +4,9 @@ import secrets
 import string
 from random import randint 
 import hashlib
-
+import pandas
+import os.path
+import datetime, locale
 
 app = Flask(__name__)
 app.template_folder = "template"
@@ -14,7 +16,7 @@ letters = string.ascii_letters
 digits = string.digits
 special_chars = string.punctuation
 alphabet = letters + digits + special_chars
-
+locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 
 #page accueil
 @app.route("/")
@@ -154,4 +156,23 @@ def changeMdp():
     print(msg2)
     session["newMdp"] = 0
     return redirect("/prevision/" + msg)
+
+#route vers page upload
+@app.route('/upload')
+def upload():
+    return render_template("index.html", maPage = "upload.html", monTitre = "Page Import de données")
+    
+#gestion des fichiers excel 
+#@app.route("/fichiers")
+@app.route("/fichiers", methods=['GET', 'POST'])
+def fichiers():
+    if "testFile" in request.files: #téléchargement du fichier excel
+        file = request.files['testFile']
+        APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+        xls = pandas.read_excel(APP_ROOT + "/files/" + file.filename)
+        data = xls.to_dict('records')
+        print([file.filename, data])
+        return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename)
+    else:
+        return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
     
