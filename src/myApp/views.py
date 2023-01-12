@@ -67,10 +67,10 @@ def connecter():
         if session["newMdp"] == 2:
             return redirect("/mdp/authOK")
             
-        if session["statut"]==1:
-            return redirect("/prevision/authOK")
-        else:
+        if session["statut"] == 0:
             return redirect("/compte/authOK")
+        else:
+            return redirect("/prevision/authOK")
     
     except TypeError as err:
         #echec d'authentification
