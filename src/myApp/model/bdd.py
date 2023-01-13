@@ -117,3 +117,21 @@ def update_userData(champ, newValue, idUser):
     except mysql.connector.Error as err:
         msg = "Failed update user data : {}".format(err)
     return msg
+
+#ajout des vols 
+def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
+    try:
+        cnx, error = connexion()
+        cursor = cnx.cursor()
+        sql = "INSERT INTO vol (aeroclub, immat, depart, arrivee, tourpiste) VALUES (%s, %s, %s, %s, %s);"
+        param = (aeroclub, immat, depart, arrivee, tourpiste)
+        cursor.execute(sql, param)
+    #recupere le dernier idVol généré par le serveur sql
+        lastId = cursor.lastrowid
+        cnx.commit()
+        close_bd(cursor, cnx)
+        msg = "addVolOK"
+    except mysql.connector.Error as err:
+        lastId=None
+        msg = "Failed add vol data: {}".format(err)
+    return msg, lastId

@@ -172,6 +172,12 @@ def fichiers():
         xls = pandas.read_excel(APP_ROOT + "/files/" + file.filename)
         data = xls.to_dict('records')
         print([file.filename, data])
+        #ajout de tous les vols dans la table vols
+        for vol in data :
+            if (vol['tour de piste'] != 1):
+                vol['tour de piste'] = 0
+            msg, lastId = bdd.add_volData(file.filename.replace(".xlsx", ""), vol['immat'], datetime.datetime.fromtimestamp(vol['depart'].timestamp()), datetime.datetime.fromtimestamp(vol['arrivee'].timestamp()), vol['tour de piste'])
+            print (str(lastId) + " " + vol['immat'] + " -- " + msg)
         return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename)
     else:
         return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
