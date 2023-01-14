@@ -1,0 +1,36 @@
+page visualisation des vols
+
+{% if liste %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Suppression</th>
+            <th>Aeroclub</th>
+            <th>Immatriculation</th>
+            <th>Départ</th>
+            <th>Arrivée</th>
+            <th>Tour de piste</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for vol in liste %} 
+        <tr>
+            <td>
+                <a href="/suppVol/{{ vol.idVol }}">
+                    <i class="fa-solid fa-trash-can"></i>
+                </a>
+            </td>
+            <td> {{ vol.aeroclub }} </td>
+            <td> {{ vol.immat }} </td>
+            <td>{{ vol.depart.strftime('%A %d %B %Y') }}<br>{{ vol.depart.strftime('%H:%M') }}</td>
+            <td>{{ vol.arrivee.strftime('%A %d %B %Y') }}<br>{{ vol.arrivee.strftime('%H:%M') }}</td>
+            {% if vol.tourpiste|int == 1 %}
+                    <td>oui</td>
+                {% else %}
+                    <td>non</td>
+                {% endif %}
+        </tr>
+    {% endfor %}       
+    </tbody>
+</table>
+{% endif %}

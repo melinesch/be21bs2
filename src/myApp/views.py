@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, request, redirect
-from myApp.model import bdd
+from myApp.model import bdd as bdd
 import secrets
 import string
 from random import randint 
@@ -182,3 +182,9 @@ def fichiers():
     else:
         return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
     
+#route vers page visualisation
+@app.route('/visualisation')
+def visualisation():
+    msg, listeVol = bdd.get_volsData()
+    print(msg)
+    return render_template("index.html", maPage = "visualisation.html", liste = listeVol, monTitre ="Page Visualisation" )

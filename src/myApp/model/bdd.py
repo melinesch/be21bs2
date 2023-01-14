@@ -135,3 +135,20 @@ def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
         lastId=None
         msg = "Failed add vol data: {}".format(err)
     return msg, lastId
+
+# récupérer tous les vols à partir de la BdD
+def get_volsData():
+    try:
+        cnx, error = connexion()
+        if error is not None:
+           return error, None
+        cursor = cnx.cursor(dictionary=True)
+        sql = "SELECT * FROM vol ORDER BY depart ASC, arrivee ASC"
+        cursor.execute(sql)
+        listeVol = cursor.fetchall()
+        close_bd(cursor, cnx)
+        msg = "OKvol"
+    except mysql.connector.Error as err:
+        listeVol = None
+        msg = "Failed get vols data : {}".format(err)
+    return msg, listeVol
