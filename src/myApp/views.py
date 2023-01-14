@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect
+from flask import Flask, render_template, session, request, redirect, jsonify
 from myApp.model import bdd as bdd
 import secrets
 import string
@@ -7,6 +7,7 @@ import hashlib
 import pandas
 import os.path
 import datetime, locale
+from .controller import bib_vols
 
 app = Flask(__name__)
 app.template_folder = "template"
@@ -188,3 +189,10 @@ def visualisation():
     msg, listeVol = bdd.get_volsData()
     print(msg)
     return render_template("index.html", maPage = "visualisation.html", liste = listeVol, monTitre ="Page Visualisation" )
+
+
+@app.route('/getCalendar', methods=["POST"])
+def getCalendar():
+    dict = bib_vols.final_cal()
+    return jsonify(dict)
+    
