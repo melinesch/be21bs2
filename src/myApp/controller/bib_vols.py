@@ -2,13 +2,24 @@
 import json
 from ..model import bdd
 
+
+# --------------------------------------------------------------
+# --------------------- VARIABLES GLOBALES ---------------------
+# --------------------------------------------------------------
+
+
 VERT='green'
 JAUNE='#E9E100'
 ORANGE='orange'
 ROUGE='red'
 
+COMPTE_MVT=False            # Indique si l'on compte les mouvvements sur la totalité des heures (True) ou seulement au départ et à l'arrivée
+NB_MVT_TDP=7                # Nombre de tdp/h
 
-    # -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# --------------------- FONCTIONS AUXILIAIRES ---------------------
+# -----------------------------------------------------------------
     
        
 def date_unitaire(date):
@@ -42,18 +53,31 @@ def heure_suivante(date_actu):
     
     
 def construction_dico(vols):
+
     dico = {}
     for vol in vols:
         dep=vol[1]
         arr=vol[2]
+        tdp=vol[3]
         ldep=date_unitaire(dep)
         larr=date_unitaire(arr)
         date_actu = [i for i in ldep]
         res=[]
-        while date_actu != larr:
-            h = str(date_actu[0])+'-'+str(date_actu[1])+'-'+str(date_actu[2])+'-'+str(date_actu[3])
-            res.append(h)
-            date_actu=heure_suivante(date_actu)
+        if tdp or COMPTE_MVT:
+            while date_actu != larr:
+                h = str(date_actu[0])+'-'+str(date_actu[1])+'-'+str(date_actu[2])+'-'+str(date_actu[3])
+                for _ in range(NB_MVT_TDP):
+                    res.append(h)
+                date_actu=heure_suivante(date_actu)
+        else:
+            date_fin=[i for i in larr]
+            hdep = str(date_actu[0])+'-'+str(date_actu[1])+'-'+str(date_actu[2])+'-'+str(date_actu[3])
+            harr = str(date_fin[0])+'-'+str(date_fin[1])+'-'+str(date_fin[2])+'-'+str(date_fin[3])
+            res.append(hdep)
+            res.append(harr)
+            
+            
+                
         for h in res:
             try:
                 dico[h].append([vol[0],vol[3]])
@@ -145,16 +169,21 @@ def write_json(string,path):
     file.write(string)
     file.close() 
     
-
-    # -----------------------------------------------------------------
-
-
-def final_cal():
+def extract_bdd():
     _,base=bdd.get_volsData()
     vols=[]
     for x in base:
         vols.append([x['immat'],str(x['depart'])[0:16],str(x['arrivee'])[0:16],x['tourpiste']])
-        
+    return vols
+    
+
+# --------------------------------------------------------------
+# --------------------- FONCTION FINALE ------------------------
+# --------------------------------------------------------------
+
+
+def final_cal():
+    vols=extract_bdd()
     dico = construction_dico(vols)
     dico = heures_concerne(dico)
     res = construit_tableau_event(dico)
