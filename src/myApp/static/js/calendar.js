@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function(){
 }
 )
 
+
 function show_minical(){
     if (scheduler.isCalendarVisible()){
         scheduler.destroyCalendar();

@@ -64,11 +64,11 @@
             <nav class="navbar bg-light navbar-light">
                 <ul class="nav navbar-nav">
                 </ul>
-                    <a href="index.html" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>Mon App</h3>
+                    <a href="/" class="navbar-brand mx-4 mb-3">
+                    <h3 class="text-primary"><i class="fa-solid fa-plane"></i> Prévisions</h3>
                 </a>
                 <div class="d-flex align-items-center ms-4 mb-4">
-                    {% if session["avatar"] != ""%}
+                    {% if ("avatar" in session) and (session["avatar"] != "")%}
                     <div class="position-relative">
                         <img class="rounded-circle" src="/static/img/{{session.avatar}}" alt="" style="width: 40px; height: 40px;">
 <!--                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>-->
@@ -85,7 +85,7 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="/" class="nav-item nav-link active"></i>Accueil</a>
+                    <a href="/" class="nav-item nav-link"></i>Accueil</a>
                     {% if session["idUser"] %} <!--utilisateur connecté-->     
                     <a href="/prevision" class="nav-item nav-link"></i>Prévisions</a>
                         {% if session.statut==0 %} <!-- si administrateur -->
@@ -120,14 +120,23 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, All Right Reserved. 
+                        <div class="col-12 col-sm-4 text-center text-sm-start">
+                         Méline SOUCHU et Léo SAMUEL <a href="https://github.com/melinesch/be21bs2"><i class="fa-brands fa-github"></i></a>
+                         
+                         
+
                         </div>
-                        <div class="col-12 col-sm-6 text-center text-sm-end">
+                        <div class="col-12 col-sm-4 text-center text-sm-start">
+                            
+                           </div>
+                        <div class="col-12 col-sm-4 text-center text-sm-end">
+                            GSEA21B @
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            Designed By <a href="https://htmlcodex.com">HTML Codex</a>
+                            <a href="https://www.enac.fr/fr">ENAC</a>
+                            <br>
+                            Janvier 2023
                         
-                        Distributed By <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                        
                         </div>
                     </div>
                 </div>

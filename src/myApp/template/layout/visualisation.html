@@ -1,15 +1,17 @@
-page visualisation des vols
+<h1>Visualisation des vols</h1>
 
 {% if liste %}
-<table class="table">
+<table class="table" data-toggle="table" data-search="true" data-pagination="true"
+data-page-size="8" data-page-list="[10, 25, 50, all]" data-show-export="true"
+data-export-types="['excel', 'xlsx', 'pdf','json', 'csv', 'txt', 'sql', 'doc']">
     <thead>
         <tr>
-            <th>Suppression</th>
-            <th>Aeroclub</th>
-            <th>Immatriculation</th>
-            <th>Départ</th>
-            <th>Arrivée</th>
-            <th>Tour de piste</th>
+            <th data-field="supp" data-align="center" data-force-hide="true">Suppression</th>
+            <th data-field="ac" data-sortable="true" data-align="center" data-force-hide="true">Aeroclub</th>
+            <th data-field="immat" data-sortable="true" data-align="center" data-force-hide="true">Immatriculation</th>
+            <th data-field="dep" data-sortable="true" data-align="center" data-force-hide="true">Départ</th>
+            <th data-field="arr" data-sortable="true" data-align="center" data-force-hide="true">Arrivée</th>
+            <th data-field="tdp" data-sortable="true" data-align="center" data-force-hide="true">Tour de piste</th>
         </tr>
     </thead>
     <tbody>
