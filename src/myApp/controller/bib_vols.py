@@ -1,6 +1,7 @@
 # vols=[['immat','dep','arr','tdp']]
 import json
 from ..model import bdd
+from ..config import SEUIL
 
 
 # --------------------------------------------------------------
@@ -14,7 +15,7 @@ ORANGE='orange'
 ROUGE='red'
 
 COMPTE_MVT=False            # Indique si l'on compte les mouvvements sur la totalité des heures (True) ou seulement au départ et à l'arrivée
-NB_MVT_TDP=7                # Nombre de tdp/h
+NB_MVT_TDP=1                # Nombre de tdp/h
 
 
 # -----------------------------------------------------------------
@@ -131,12 +132,12 @@ def convert_key_date(date):
 def couleur(mvt,tdp,solActive):
     color=VERT
     if not solActive:
-        if mvt<20:
+        if mvt<SEUIL['vert']:
             color=VERT
-        elif mvt<40:
+        elif mvt<SEUIL['jaune']:
             color=JAUNE
-        elif mvt<60:
-            if tdp/mvt<0.40:
+        elif mvt<SEUIL['orange']:
+            if tdp/mvt<SEUIL['tdp']:
                 color=ORANGE
             else:
                 color=ROUGE
