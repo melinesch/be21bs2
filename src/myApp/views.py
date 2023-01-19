@@ -185,14 +185,38 @@ def fichiers():
     
 #route vers page visualisation
 @app.route('/visualisation')
-def visualisation():
+@app.route('/visualisation/<infoMsg>')
+def visualisation(infoMsg=""):
     msg, listeVol = bdd.get_volsData()
     print(msg)
-    return render_template("index.html", maPage = "visualisation.html", liste = listeVol, monTitre ="Page Visualisation" )
+    return render_template("index.html", maPage = "visualisation.html", liste = listeVol, monTitre ="Page Visualisation", info = infoMsg)
 
 
 @app.route('/getCalendar', methods=["POST"])
 def getCalendar():
     dict = bib_vols.final_cal()
     return jsonify(dict)
+    
+# suppression d'un vol
+@app.route("/suppVol/<idVol>")
+def suppVol(idVol=""):
+    msg = bdd.del_volData(idVol)
+    print (msg)
+    return redirect("/visualisation")
+
+# réception des données du formulaire d'ajout manuel d'un vol
+@app.route("/addVol", methods=['POST'])
+def addVol():
+    aeroclub = request.form['aeroclub']
+    immat = request.form['immat']
+    dateDepart = request.form['dateDepart']
+    heureDepart = request.form['heureDepart']
+    dateArrivee = request.form['dateArrivee']
+    heureArrivee = request.form['heureArrivee']
+    depart = dateDepart+" " + heureDepart
+    arrivee = dateArrivee+" "+ heureArrivee
+    tourpiste = int(request.form['tourpiste'])
+    msg, lastId = bdd.add_volData(aeroclub, immat, depart, arrivee, tourpiste)
+    print(msg)
+    return redirect("/visualisation/" + msg)
     

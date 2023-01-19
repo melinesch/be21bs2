@@ -43,9 +43,18 @@
         </div>
     {% elif info and info=="logoutOK" %} 
         <div class="alert alert-success text-center">
-            <span class="badge badge-pill badge-secondary">Success</span>
+            <span class="badge badge-pill badge-success">Success</span>
             Vous avez été déconnecté. Ce message s'auto-détruira dans 10 secondes, 9, 8, 7...
         </div>
+    {% elif info and info =="addVolOK" %} 
+        <div class="alert alert-success text-center">
+            <span class="badge badge-pill badge-success"> Succès</span>Nouveau vol ajouté
+        </div>    
+    <!--{% elif info and "Failed" in info %} 
+        <div class="alert alert-danger text-center">
+            <span class="badge badge-pill badge-danger">Error</span>
+        {{ info }}
+        </div>  -->   
     {% endif %}
 
     <div class="container-xxl position-relative bg-white d-flex p-0">

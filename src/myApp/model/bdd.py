@@ -152,3 +152,19 @@ def get_volsData():
         listeVol = None
         msg = "Failed get vols data : {}".format(err)
     return msg, listeVol
+
+# suppression d'un vol
+def del_volData(idVol):
+    try:
+        cnx, error = connexion()
+        cursor = cnx.cursor()
+        sql = "DELETE from vol WHERE idVol=%s;"
+        param = (idVol,)
+        cursor.execute(sql, param)
+        cnx.commit()
+        close_bd(cursor, cnx)
+        msg = "suppVolOK"
+    except mysql.connector.Error as err:
+        msg = "Failed del vol data : {}".format(err)
+        return msg
+    
