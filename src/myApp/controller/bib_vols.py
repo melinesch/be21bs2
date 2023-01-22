@@ -1,6 +1,6 @@
 import json
 from ..model import bdd
-from ..config import SEUIL,COULEUR,COMPTE_MVT,NB_MVT_TDP,BUILD_ZERO
+from ..config import SEUIL,COULEUR,COMPTE_MVT,NB_MVT_TDP,BUILD_ZERO,CACHE_BASE
 import os
 
 # -----------------------------------------------------------------
@@ -189,7 +189,7 @@ def extract_bdd():
 
 
 def final_cal():
-    if not os.path.exists('cal.json'):
+    if not os.path.exists('cal.json') or not CACHE_BASE:
         # f = open('cal.json','w')
         vols=extract_bdd()
         dico = construction_dico(vols)

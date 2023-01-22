@@ -43,14 +43,12 @@ document.addEventListener("DOMContentLoaded", function(){
             else {
                 return false
             }
-            
         }
 
-        // alert(est_dans('TDP:0','MVT:10 TDP:0 !'))
 
 
             scheduler.filter_week = function(id, event){
-                if(est_dans('TDP:0',event.text) & value=='tdp') {return true}
+                if(!(est_dans('MVT:0',event.text)) & est_dans('TDP:0',event.text) & value=='tdp') {return true}
                 else if(!est_dans('TDP:0',event.text) & value=='mvt') {return true}
                 else if (value=='both') {return true}
                 else { return false}

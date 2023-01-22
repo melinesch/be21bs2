@@ -35,10 +35,12 @@ COULEUR = {
     'zero':'grey'
 }
 
-COMPTE_MVT=False            # Indique si l'on compte les mouvements sur la totalité des heures (True) ou seulement au départ et à l'arrivée
-NB_MVT_TDP=10  
-
+  
 BUILD_ZERO = {
     'debut':[1,1,2022,8],
     'fin':[31,12,2024,19]
 }
+
+COMPTE_MVT=False            # Indique si l'on compte les mouvements sur la totalité des heures (True) ou seulement au départ et à l'arrivée
+NB_MVT_TDP=10               # Nombre de mouvement pour 1 tour de piste
+CACHE_BASE=True             # Active ou non la mise en cache du calcul des créneaux du calendrier
