@@ -7,6 +7,7 @@ import hashlib
 import pandas
 import os.path
 import datetime, locale
+from datetime import timedelta
 from .controller import bib_vols, check_role
 
 app = Flask(__name__)
@@ -19,6 +20,11 @@ special_chars = string.punctuation
 alphabet = letters + digits + special_chars
 locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=5)
+    
 #page accueil
 @app.route("/")
 @app.route("/accueil")
