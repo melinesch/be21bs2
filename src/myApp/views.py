@@ -8,7 +8,7 @@ import pandas
 import os.path
 import datetime, locale
 from datetime import timedelta
-from .controller import bib_vols, check_role
+from .controller import auth, bib_vols
 
 app = Flask(__name__)
 app.template_folder = "template"
@@ -34,14 +34,14 @@ def index(infoMsg=""):
 
 @app.route('/webmaster')
 def webmaster():
-    if check_role.checkRole("guest") :
+    if auth.checkRole("guest") :
         return render_template("index.html", maPage = "webmaster.html", monTitre = "Webmasters")
     return redirect("/accueil/accessNotAllowed")
 
 @app.route('/prevision')
 @app.route('/prevision/<infoMsg>')
 def previsions(infoMsg = "") :
-    if check_role.checkRole("member") :
+    if auth.checkRole("member") :
         return render_template("index.html", maPage = "prevision.html", monTitre = "Prévisions", info = infoMsg)
     return redirect("/accueil/accessNotAllowed")
 
@@ -49,7 +49,7 @@ def previsions(infoMsg = "") :
 @app.route('/compte/<infoMsg>')
 @app.route('/compte/<infoMsg>/<pwd>')
 def compte(infoMsg="", pwd=""):
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         return render_template("index.html", maPage = "compte.html", monTitre = "Création de compte", info=infoMsg, pwd=pwd)
     return redirect("/accueil/accessNotAllowed")
 
@@ -111,7 +111,7 @@ def deconnecter():
 #réception des données du formulaire de création de compte
 @app.route("/addUser", methods=['POST'])
 def addUser():
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         nom = request.form["nom"]
         prenom = request.form["prenom"]
         mail = request.form["mail"]
@@ -137,14 +137,14 @@ def addUser():
 @app.route('/mdp')
 @app.route('/mdp/<infoMsg>')
 def mdp(infoMsg=""):
-    if check_role.checkRole("member") :
+    if auth.checkRole("member") :
         return render_template("index.html", maPage = "mdp.html", monTitre = "Changer le mot de passe", info=infoMsg)
     return redirect("/accueil/accessNotAllowed")
 
 #réception des données du formulaire de modification de mot de passe
 @app.route("/changeMdp", methods=['POST'])
 def changeMdp():
-    if check_role.checkRole("member") :
+    if auth.checkRole("member") :
         # Récupération des données du formulaire
         oldMdp = request.form["oldMdp"]
         mdp = request.form["mdp"]
@@ -180,7 +180,7 @@ def changeMdp():
 #route vers page upload
 @app.route('/upload')
 def upload():
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         return render_template("index.html", maPage = "upload.html", monTitre = "Page Import de données")
     return redirect("/accueil/accessNotAllowed")
     
@@ -188,7 +188,7 @@ def upload():
 #@app.route("/fichiers")
 @app.route("/fichiers", methods=['GET', 'POST'])
 def fichiers():
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         if "testFile" in request.files: #téléchargement du fichier excel
             file = request.files['testFile']
             APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -210,7 +210,7 @@ def fichiers():
 @app.route('/visualisation')
 @app.route('/visualisation/<infoMsg>')
 def visualisation(infoMsg=""):
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         msg, listeVol = bdd.get_volsData()
         print(msg)
         return render_template("index.html", maPage = "visualisation.html", liste = listeVol, monTitre ="Page Visualisation", info = infoMsg)
@@ -218,7 +218,7 @@ def visualisation(infoMsg=""):
 
 @app.route('/getCalendar', methods=["POST"])
 def getCalendar():
-    if check_role.checkRole("member") :
+    if auth.checkRole("member") :
         dict = bib_vols.final_cal()
         return jsonify(dict)
     return redirect("/accueil/accessNotAllowed")
@@ -226,7 +226,7 @@ def getCalendar():
 # suppression d'un vol
 @app.route("/suppVol/<idVol>")
 def suppVol(idVol=""):
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         msg = bdd.del_volData(idVol)
         print (msg)
         return redirect("/visualisation")
@@ -235,7 +235,7 @@ def suppVol(idVol=""):
 # réception des données du formulaire d'ajout manuel d'un vol
 @app.route("/addVol", methods=['POST'])
 def addVol():
-    if check_role.checkRole("admin") :
+    if auth.checkRole("admin") :
         aeroclub = request.form['aeroclub']
         immat = request.form['immat']
         dateDepart = request.form['dateDepart']
