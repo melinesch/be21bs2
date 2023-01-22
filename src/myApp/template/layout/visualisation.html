@@ -7,19 +7,20 @@
                 <form class = "form-control" method="post" id="addVol" action="/addVol">
                     <div class="mb-3">
                         <label for="immatAdd" class="form-label">Immatriculation</label>
-                        <input type="text" class="form-control" name="immat" id="immat">
+                        <!--le pattern qui suit ne fonctionne que pour l'ajout d'avions immatriculés en France, il faudrait le modifier si on veut ajouter des vols d'avions immatriculés à l'étranger-->
+                        <input type="text" class="form-control" name="immat" id="immat" placeholder="X-XXXX" pattern="[A-Z]{1}[-][A-Z]{4}" required>
                     </div>
                     <div class="mb-3">
                         <label for="dateDepart" class="form-label">Date de départ</label>
-                        <input type="date" class="form-control" name="dateDepart" id="dateDepart">
+                        <input type="date" class="form-control" name="dateDepart" id="dateDepart" required>
                         <label for="heureDepart">Heure de départ</label>
-                        <input type="time" name="heureDepart" id="heureDepart"/>
+                        <input type="time" name="heureDepart" id="heureDepart"/ required>
                     </div>
                     <div class="mb-3">
                         <label for="dateArrivee" class="form-label">Date de d'arrivée</label>
-                        <input type="date" class="form-control" name="dateArrivee" id="dateArrivee">
+                        <input type="date" class="form-control" name="dateArrivee" id="dateArrivee" required>
                         <label for="heureArrivee">Heure d'arrivée</label>
-                        <input type="time" name="heureArrivee" id="heureArrivee"/>
+                        <input type="time" name="heureArrivee" id="heureArrivee" required>
                     </div>
                     <div class="form-floating mb-3">
                         <label for="aeroclub" class="form-label">Aeroclub</label>

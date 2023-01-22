@@ -9,19 +9,19 @@
                 <form method="post" id="loginForm" action="/addUser">
                     <div class="mb-3">
                         <label for="nomAdd" class="form-label">Nom</label>
-                        <input type="text" class="form-control" name="nom" id="nom"  required>
+                        <input type="text" class="form-control" name="nom" id="nom"  required placeholder="Saisissez ici le nom">
                     </div>
                     <div class="mb-3">
                         <label for="prenomAdd" class="form-label">Prénom</label>
-                        <input type="text" class="form-control" name="prenom" id="prenom"  required>
+                        <input type="text" class="form-control" name="prenom" id="prenom"  required placeholder="Saisissez ici le prénom">
                     </div>
                     <div class="mb-3">
                         <label for="mail" class="form-label">Adresse email</label>
-                        <input type="email" class="form-control" name="mail" id="mail"  required>
+                        <input type="email" class="form-control" name="mail" id="mail"  required placeholder="Saisissez ici l'e-mail">
                     </div>
                     <div class="mb-3">
                         <label for="login" class="form-label">Identifiant</label>
-                        <input type="text" class="form-control" name="login" id="login"  required>
+                        <input type="text" class="form-control" name="login" id="login"  required placeholder="Saisissez ici le login">
                     </div>
                 
                     <div class="form-floating mb-3">
@@ -31,7 +31,6 @@
                             <option value=0>Administrateur</option>
                         </select>
                     </div>
-
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                 </form>
                 {% if info and info =="addUserOK" %}
