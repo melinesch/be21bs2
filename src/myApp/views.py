@@ -6,6 +6,7 @@ from random import randint
 import hashlib
 import pandas
 import os.path
+from os import remove
 import datetime, locale
 from .controller import bib_vols
 
@@ -167,6 +168,7 @@ def upload():
 #@app.route("/fichiers")
 @app.route("/fichiers", methods=['GET', 'POST'])
 def fichiers():
+    remove('cal.json')
     if "testFile" in request.files: #téléchargement du fichier excel
         file = request.files['testFile']
         APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -179,6 +181,7 @@ def fichiers():
                 vol['tour de piste'] = 0
             msg, lastId = bdd.add_volData(file.filename.replace(".xlsx", ""), vol['immat'], datetime.datetime.fromtimestamp(vol['depart'].timestamp()), datetime.datetime.fromtimestamp(vol['arrivee'].timestamp()), vol['tour de piste'])
             print (str(lastId) + " " + vol['immat'] + " -- " + msg)
+        
         return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename)
     else:
         return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")

@@ -1,7 +1,7 @@
 import json
 from ..model import bdd
 from ..config import SEUIL,COULEUR,COMPTE_MVT,NB_MVT_TDP,BUILD_ZERO
-
+import os
 
 # -----------------------------------------------------------------
 # --------------------- FONCTIONS AUXILIAIRES ---------------------
@@ -189,10 +189,17 @@ def extract_bdd():
 
 
 def final_cal():
-    vols=extract_bdd()
-    dico = construction_dico(vols)
-    dico = heures_concerne(dico)
-    res = construit_tableau_event(dico) + construit_tableau_event_sans_vol(dico)
+    if not os.path.exists('cal.json'):
+        # f = open('cal.json','w')
+        vols=extract_bdd()
+        dico = construction_dico(vols)
+        dico = heures_concerne(dico)
+        res = construit_tableau_event(dico) + construit_tableau_event_sans_vol(dico)
+        write_json(convert_json(res),'cal.json')
+        
+    else:
+        f=open('cal.json')
+        res = json.load(f)
     return res
 
 
