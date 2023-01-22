@@ -195,6 +195,11 @@ def fichiers():
             data = xls.to_dict('records')
             print([file.filename, data])
             #ajout de tous les vols dans la table vols
+            listDate = [d.get('depart').timestamp() for d in data]
+            mindate = datetime.datetime.fromtimestamp(min(listDate))
+            maxdate = datetime.datetime.fromtimestamp(max(listDate))
+            #print(datetime.datetime.fromtimestamp(mindate.strftime('%A %d %B %Y')))
+            msg = bdd.reset_volData(file.filename.replace(".xlsx", ""), mindate, maxdate)
             for vol in data :
                 if (vol['tour de piste'] != 1):
                     vol['tour de piste'] = 0

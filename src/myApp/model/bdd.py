@@ -133,4 +133,17 @@ def del_volData(idVol):
     except mysql.connector.Error as err:
         msg = "Failed del vol data : {}".format(err)
         return msg
-    
+
+def reset_volData(aeroclub, mindate, maxdate):
+    try:
+        cnx, error = connexion()
+        cursor = cnx.cursor()
+        sql = "DELETE from vol WHERE aeroclub=%s and depart >= %s and depart <= %s;"
+        param = (aeroclub, mindate, maxdate)
+        cursor.execute(sql, param)
+        cnx.commit()
+        close_bd(cursor, cnx)
+        msg = "suppVolOK"
+    except mysql.connector.Error as err:
+        msg = "Failed del vol data : {}".format(err)
+        return msg
