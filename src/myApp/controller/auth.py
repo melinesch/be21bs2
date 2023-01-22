@@ -1,7 +1,7 @@
 from flask import session
 
 def checkRole(role = "guest") :
-    if not session or not session["login"] or not session["statut"] :
+    if not session or "login" not in session or "statut" not in session :
         statut = 3
     else :
         statut = session["statut"]
