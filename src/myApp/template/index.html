@@ -59,91 +59,106 @@
         <!-- Spinner End -->
 
 
+        
+
         <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <ul class="nav navbar-nav">
-                </ul>
-                    <a href="/" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa-solid fa-plane"></i> Prévisions</h3>
-                </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    {% if ("avatar" in session) and (session["avatar"] != "")%}
-                    <div class="position-relative">
-                        <img class="rounded-circle" src="/static/img/{{session.avatar}}" alt="" style="width: 40px; height: 40px;">
-<!--                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>-->
-                    </div>
-                    {% endif %}
-                    <div class="ms-3 ml-1">
-                        <h6 class="mb-0"> {{session.prenom}} {{session.nom}} </h6>
-                        <span>
-                            {%if session.statut==0 : %}
-                                <span>Administrateur</span>
+        <div class="container-fluid">
+            <div class="row flex-nowrap">
+                <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-light">
+                    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                        <a href="/" class="navbar-brand mx-4 mb-3">
+                            <h3 class="text-primary"> Prévisions</h3>
+                        </a>
+                        
+                        <div class="d-flex align-items-center ms-4 mb-4">
+                            {% if ("avatar" in session) and (session["avatar"] != "")%}
+                            <div class="position-relative">
+                                <img class="rounded-circle" src="/static/img/{{session.avatar}}" alt="" style="width: 40px; height: 40px;">
+        <!--                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>-->
+                            </div>
                             {% endif %}
-                        </span>
-                        <!--<span>Admin</span>-->
-                    </div>
-                </div>
-                <div class="navbar-nav w-100">
-                    <a href="/" class="nav-item nav-link"></i>Accueil</a>
-                    {% if session["idUser"] %} <!--utilisateur connecté-->     
-                    <a href="/prevision" class="nav-item nav-link"></i>Prévisions</a>
+                            <div class="ms-3 ml-1">
+                                <h6 class="mb-0 text-dark"> {{session.prenom}} {{session.nom}} </h6>
+                                <span>
+                                    {%if session.statut==0 : %}
+                                        <span class="text-dark">Administrateur</span>
+                                    {% endif %}
+                                </span>
+                                <!--<span>Admin</span>-->
+                            </div>
+                        </div>
+                        <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                            <li class="nav-item">
+                                {% if session["idUser"] %} <!--utilisateur connecté-->
+                    <a href="/logout" class="nav-item nav-link font-weight-bold"></i>Se déconnecter</a>    
+                    {% else %} <!-- utilisateur non connecté-->
+                    <a href="/login" class="nav-item nav-link font-weight-bold"></i>Se Connecter</a> 
+                    {% endif %}
+                    <a href="/webmaster" class="nav-item nav-link font-weight-bold"></i>Webmasters</a>
+
+                                {% if session["idUser"] %} <!--utilisateur connecté-->     
+                    <a href="/prevision" class="nav-item nav-link font-weight-bold"></i>Prévisions</a>
+
                         {% if session.statut==0 %} <!-- si administrateur -->
-                        <div class="nav-item dropdown">
+                        
+                        <div class="nav-item dropdown font-weight-bold">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"></i>Administration</a>
                             <div class="dropdown-menu bg-transparent border-0">
-                                <a href="/compte" class="dropdown-item">Création de compte</a>
-                                <a href="/upload" class="dropdown-item">Import des données</a>
-                                <a href="/visualisation" class="dropdown-item">Visualisation des vols</a>
+                                <a href="/compte" class="dropdown-item text-info">Création de compte</a>
+                                <a href="/upload" class="dropdown-item text-info">Import des données</a>
+                                <a href="/visualisation" class="dropdown-item text-info">Visualisation des vols</a>
                             </div>
                         </div> 
                         {% endif %}  
                     {% endif %}   
-                    <a href="/webmaster" class="nav-item nav-link"></i>Webmasters</a>
-                    {% if session["idUser"] %} <!--utilisateur connecté-->
-                    <a href="/logout" class="nav-item nav-link"></i>Se déconnecter</a>    
-                    {% else %} <!-- utilisateur non connecté-->
-                    <a href="/login" class="nav-item nav-link"></i>Se Connecter</a> 
-                    {% endif %}
+                    
+                    
+                            </li>
+                            
+                    </div>
                 </div>
-            </nav>
+                <div class="col py-3">
+                    <!-- Content Start -->
+                    
+
+                        {% include("layout/" + maPage) %}
+            
+                        <!-- Footer Start -->
+                        <div class="container-fluid pt-4 px-4">
+                            <div class="bg-light rounded-top p-4">
+                                <div class="row">
+                                    <div class="col-12 col-sm-4 text-center text-sm-start">
+                                     Méline SOUCHU et Léo SAMUEL <a href="https://github.com/melinesch/be21bs2"><i class="fa-brands fa-github"></i></a>
+                                     
+                                     
+            
+                                    </div>
+                                    <div class="col-12 col-sm-4 text-center text-sm-start">
+                                        
+                                       </div>
+                                    <div class="col-12 col-sm-4 text-center text-sm-end">
+                                        GSEA21B @
+                                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
+                                        <a href="https://www.enac.fr/fr">ENAC</a>
+                                        <br>
+                                        Janvier 2023
+                                    
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Footer End -->
+                    
+                    <!-- Content End -->
+                </div>
+            </div>
         </div>
         <!-- Sidebar End -->
 
 
-        <!-- Content Start -->
-        <div class="content">
-
-            {% include("layout/" + maPage) %}
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-4 text-center text-sm-start">
-                         Méline SOUCHU et Léo SAMUEL <a href="https://github.com/melinesch/be21bs2"><i class="fa-brands fa-github"></i></a>
-                         
-                         
-
-                        </div>
-                        <div class="col-12 col-sm-4 text-center text-sm-start">
-                            
-                           </div>
-                        <div class="col-12 col-sm-4 text-center text-sm-end">
-                            GSEA21B @
-                            <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                            <a href="https://www.enac.fr/fr">ENAC</a>
-                            <br>
-                            Janvier 2023
-                        
-                        
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Footer End -->
-        </div>
-        <!-- Content End -->
+        
+        
 
 
         <!-- Back to Top -->
