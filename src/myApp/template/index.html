@@ -18,13 +18,16 @@
         <div class="alert alert-success text-center">
             <span class="badge badge-pill badge-success">Success</span>
             Authentification réussie
-            
         </div>
-        
     {% elif info and info=="authEchec" %} 
         <div class="alert alert-danger text-center">
             <span class="badge badge-pill badge-danger">Error</span>
             Authentification refusée; merci de retenter votre chance...
+        </div>
+    {% elif info and info=="accessNotAllowed" %} 
+        <div class="alert alert-danger text-center">
+            <span class="badge badge-pill badge-danger">Error</span>
+            Accès refusé; merci de vous connecter ou de passer outre...
         </div>
     {% elif info and info=="updateUserOK" %} 
         <div class="alert alert-success text-center">
@@ -66,7 +69,6 @@
             </div>
         </div>
         <!-- Spinner End -->
-
 
         <!-- Sidebar Start -->
         <div class="sidebar pe-4 pb-3">
@@ -112,7 +114,7 @@
                     {% if session["idUser"] %} <!--utilisateur connecté-->
                     <a href="/logout" class="nav-item nav-link"></i>Se déconnecter</a>    
                     {% else %} <!-- utilisateur non connecté-->
-                    <a href="/login" class="nav-item nav-link"></i>Se Connecter</a> 
+                    <a href="/login" class="nav-item nav-link"></i>Se connecter</a> 
                     {% endif %}
                 </div>
             </nav>
