@@ -5,7 +5,6 @@ import hashlib
 
 #################################################################################################################
 # connexion au serveur de la base de données
-
 def connexion():
     cnx = ""
     try:
@@ -21,30 +20,11 @@ def connexion():
             print(err)
     return cnx, error
 
-
 #################################################################################################################
 # fermeture de la connexion au serveur de la base de données
-
 def close_bd(cursor, cnx):
     cursor.close()
     cnx.close()
-    
-    
-def get_membresData():
-    try:
-        cnx, error = connexion()
-        if error is not None:
-           return error, None
-        cursor = cnx.cursor(dictionary=True)
-        sql = "SELECT * FROM membres"
-        cursor.execute(sql)
-        listeMembre = cursor.fetchall()
-        close_bd(cursor, cnx)
-        msg = "OKmembres"
-    except mysql.connector.Error as err:
-        listeMembre = None
-        msg = "Failed get membres data : {}".format(err)
-    return msg, listeMembre
 
 def verifAuthData(login, mdp):
     try:
@@ -66,20 +46,6 @@ def verifAuthData(login, mdp):
         msg = "Failed get Auth data : {}".format(err)
     print(user)
     return msg, user
-
-def del_membreData(idUser):
-    try:
-        cnx, error = connexion()
-        cursor = cnx.cursor()
-        sql = "DELETE FROM membres WHERE idUser=%s;"
-        param = (idUser,)
-        cursor.execute(sql, param)
-        cnx.commit()
-        close_bd(cursor, cnx)
-        msg = "suppMembreOK"
-    except mysql.connector.Error as err:
-        msg = "Failed del membre data : {}".format(err)
-    return msg
 
 #ajout d'un utilisateur
 def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
