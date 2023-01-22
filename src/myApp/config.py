@@ -20,9 +20,25 @@ DB_SERVER = {
 }
 
 SEUIL = {
-    'vert':5,
-    'jaune':10,
-    'orange':15,
-    'rouge':20,
-    'tdp':0.40
+    'vert':20,
+    'jaune':40,
+    'orange':60,
+    'rouge':60,
+    'tdp':0.90
+}
+
+COULEUR = {
+    'vert':'#62ad00',
+    'jaune':'#ffc300',
+    'orange':'#ff8c00',
+    'rouge':'#d4022c',
+    'zero':'grey'
+}
+
+COMPTE_MVT=False            # Indique si l'on compte les mouvements sur la totalité des heures (True) ou seulement au départ et à l'arrivée
+NB_MVT_TDP=10  
+
+BUILD_ZERO = {
+    'debut':[1,1,2022,8],
+    'fin':[31,12,2024,19]
 }

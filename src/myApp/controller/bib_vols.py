@@ -1,21 +1,6 @@
-# vols=[['immat','dep','arr','tdp']]
 import json
 from ..model import bdd
-from ..config import SEUIL
-
-
-# --------------------------------------------------------------
-# --------------------- VARIABLES GLOBALES ---------------------
-# --------------------------------------------------------------
-
-
-VERT='green'
-JAUNE='#E9E100'
-ORANGE='orange'
-ROUGE='red'
-
-COMPTE_MVT=False            # Indique si l'on compte les mouvvements sur la totalité des heures (True) ou seulement au départ et à l'arrivée
-NB_MVT_TDP=1                # Nombre de tdp/h
+from ..config import SEUIL,COULEUR,COMPTE_MVT,NB_MVT_TDP,BUILD_ZERO
 
 
 # -----------------------------------------------------------------
@@ -64,7 +49,7 @@ def construction_dico(vols):
         larr=date_unitaire(arr)
         date_actu = [i for i in ldep]
         res=[]
-        if tdp or COMPTE_MVT:
+        if tdp:
             while date_actu != larr:
                 h = str(date_actu[0])+'-'+str(date_actu[1])+'-'+str(date_actu[2])+'-'+str(date_actu[3])
                 for _ in range(NB_MVT_TDP):
@@ -130,30 +115,50 @@ def convert_key_date(date):
 
 
 def couleur(mvt,tdp,solActive):
-    color=VERT
+    color=COULEUR['vert']
     if not solActive:
+        if mvt==0:
+            return COULEUR['zero']
         if mvt<SEUIL['vert']:
-            color=VERT
+            color=COULEUR['vert']
         elif mvt<SEUIL['jaune']:
-            color=JAUNE
+            color=COULEUR['jaune']
         elif mvt<SEUIL['orange']:
             if tdp/mvt<SEUIL['tdp']:
-                color=ORANGE
+                color=COULEUR['orange']
             else:
-                color=ROUGE
+                color=COULEUR['rouge']
         else:
-            color=ROUGE
+            color=COULEUR['rouge']
     return color
         
     
 def construit_tableau_event(dico):
     res=[]
-    # {text:"Meeting",    start_date:"2023-01-11 14:00", end_date:"2023-01-11 17:00", color:'green'}
     for key in dico:
-        mvt,tdp = dico[key]
-        event = {'text':'MVT:'+str(mvt)+'   TDP:'+str(tdp), 'start_date':convert_date_format(key), 'end_date': convert_date_format(convert_key_date(heure_suivante(convert_date_key(key)))),'color':couleur(mvt,tdp,False)}
-        res.append(event)
+        if key[-2]+key[-1]!='13' and key[-2]+key[-1]!='-7' and key[-2]+key[-1]!='20':
+            mvt,tdp = dico[key]
+            event = {'text':'MVT:'+str(mvt)+'   TDP:'+str(tdp), 'start_date':convert_date_format(key), 'end_date': convert_date_format(convert_key_date(heure_suivante(convert_date_key(key)))),'color':couleur(mvt,tdp,False)}
+            res.append(event)
     return res 
+
+def construit_tableau_event_sans_vol(dico):
+    deb = [i for i in BUILD_ZERO['debut']]
+    fin = [i for i in BUILD_ZERO['fin']]
+    res=[]
+    while deb!=fin:
+        if convert_key_date(deb) not in dico: 
+            sdate=convert_date_format(convert_key_date(deb))
+            deb=heure_suivante(deb)
+            if deb[3]!=14 and deb[3]!=21 and deb[3]!=8:
+                edate=convert_date_format(convert_key_date(deb))
+                event = {'text':'MVT:0 TDP:0', 'start_date':sdate, 'end_date':edate ,'color':couleur(0,0,False)}
+                res.append(event)
+        else:
+            deb=heure_suivante(deb)
+    return res
+    
+    
     
     
 def convert_json(t):
@@ -187,9 +192,8 @@ def final_cal():
     vols=extract_bdd()
     dico = construction_dico(vols)
     dico = heures_concerne(dico)
-    res = construit_tableau_event(dico)
+    res = construit_tableau_event(dico) + construit_tableau_event_sans_vol(dico)
     return res
-
 
 
 
