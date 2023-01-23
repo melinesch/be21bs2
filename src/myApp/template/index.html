@@ -8,23 +8,25 @@
     {% if info and info=="logoutOK" %} 
     <meta http-equiv="refresh" content="10; URL=/"> <!-- 10 secondes avant effacement-->
     {% endif %}
-    <script src="../static/vendors/scheduler/codebase/dhtmlxscheduler.js" type="text/javascript"></script>
+    <script src="/static/vendors/scheduler/codebase/dhtmlxscheduler.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/static/vendors/scheduler/codebase/dhtmlxscheduler_material.css" type="text/css">
 </head>
 
 <body>
-    <link rel="stylesheet" href="../static/vendors/scheduler/codebase/dhtmlxscheduler_material.css" 
-    type="text/css">
     {% if info and info=="authOK" %} 
         <div class="alert alert-success text-center">
             <span class="badge badge-pill badge-success">Success</span>
             Authentification réussie
-            
         </div>
-        
     {% elif info and info=="authEchec" %} 
         <div class="alert alert-danger text-center">
             <span class="badge badge-pill badge-danger">Error</span>
             Authentification refusée; merci de retenter votre chance...
+        </div>
+    {% elif info and info=="accessNotAllowed" %} 
+        <div class="alert alert-danger text-center">
+            <span class="badge badge-pill badge-danger">Error</span>
+            Accès refusé; merci de vous connecter ou de passer outre...
         </div>
     {% elif info and info=="updateUserOK" %} 
         <div class="alert alert-success text-center">
@@ -43,9 +45,18 @@
         </div>
     {% elif info and info=="logoutOK" %} 
         <div class="alert alert-success text-center">
-            <span class="badge badge-pill badge-secondary">Success</span>
+            <span class="badge badge-pill badge-success">Success</span>
             Vous avez été déconnecté. Ce message s'auto-détruira dans 10 secondes, 9, 8, 7...
         </div>
+    {% elif info and info =="addVolOK" %} 
+        <div class="alert alert-success text-center">
+            <span class="badge badge-pill badge-success"> Succès</span>Nouveau vol ajouté
+        </div>    
+    <!--{% elif info and "Failed" in info %} 
+        <div class="alert alert-danger text-center">
+            <span class="badge badge-pill badge-danger">Error</span>
+        {{ info }}
+        </div>  -->   
     {% endif %}
 
     <div class="container-xxl position-relative bg-white d-flex p-0">
@@ -58,8 +69,6 @@
         </div>
         <!-- Spinner End -->
 
-
-        
 
         <!-- Sidebar Start -->
         <div class="container-fluid">
@@ -111,6 +120,7 @@
                         </div> 
                         {% endif %}  
                     {% endif %}   
+
                     
                     
                             </li>
@@ -120,6 +130,7 @@
                 <div class="col py-3">
                     <!-- Content Start -->
                     
+
 
                         {% include("layout/" + maPage) %}
             
@@ -159,7 +170,6 @@
 
         
         
-
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

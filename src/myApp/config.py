@@ -11,11 +11,12 @@ WEB_SERVER = {
 
 # configuration du serveur de BDD
 DB_SERVER = {
-    "user": "root",
-    "password": "root",
-    "host": "localhost",
-    "port": 3306,
-    "database": "gsea21b_samuel_souchu",  # nom de la base de donneés
+
+    "user":"root",
+    "password":"root",
+    "host":"localhost",
+    "port":3306,
+    "database":"gsea21b_samuel_souchu", #nom de la base de données
     "raise_on_warnings": True
 }
 
