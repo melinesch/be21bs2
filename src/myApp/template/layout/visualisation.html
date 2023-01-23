@@ -1,20 +1,65 @@
 <h1>Visualisation des vols</h1>
 
-<div class="container-fluid pt-4 px-4">
-    <div class="row g-4">
-        <div class="col-sm-12 col-xl-6">
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+            {% if liste %}
+            <table class="table" data-toggle="table" data-search="true" data-pagination="true" data-page-size="8"
+                data-page-list="[10, 25, 50, all]" data-show-export="true"
+                data-export-types="['excel', 'xlsx', 'pdf','json', 'csv', 'txt', 'sql', 'doc']">
+                <thead>
+                    <tr>
+                        <th data-field="supp" data-align="center" data-force-hide="true">Suppression</th>
+                        <th data-field="ac" data-sortable="true" data-align="center" data-force-hide="true">Aeroclub
+                        </th>
+                        <th data-field="immat" data-sortable="true" data-align="center" data-force-hide="true">
+                            Immatriculation</th>
+                        <th data-field="dep" data-sortable="true" data-align="center" data-force-hide="true">Départ</th>
+                        <th data-field="arr" data-sortable="true" data-align="center" data-force-hide="true">Arrivée
+                        </th>
+                        <th data-field="tdp" data-sortable="true" data-align="center" data-force-hide="true">Tour de
+                            piste</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vol in liste %}
+                    <tr>
+                        <td>
+                            <a href="/suppVol/{{ vol.idVol }}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </td>
+                        <td> {{ vol.aeroclub }} </td>
+                        <td> {{ vol.immat }} </td>
+                        <td>{{ vol.depart.strftime('%A %d %B %Y') }}<br>{{ vol.depart.strftime('%H:%M') }}</td>
+                        <td>{{ vol.arrivee.strftime('%A %d %B %Y') }}<br>{{ vol.arrivee.strftime('%H:%M') }}</td>
+                        {% if vol.tourpiste|int == 1 %}
+                        <td>oui</td>
+                        {% else %}
+                        <td>non</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        <div class="col-4">
             <div class="bg-light rounded h-100 p-4">
-                <form class = "form-control" method="post" id="addVol" action="/addVol">
+                <form class="form-control" method="post" id="addVol" action="/addVol">
                     <div class="mb-3">
                         <label for="immatAdd" class="form-label">Immatriculation</label>
                         <!--le pattern qui suit ne fonctionne que pour l'ajout d'avions immatriculés en France, il faudrait le modifier si on veut ajouter des vols d'avions immatriculés à l'étranger-->
-                        <input type="text" class="form-control" name="immat" id="immat" placeholder="X-XXXX" pattern="[A-Z]{1}[-][A-Z]{4}" required>
+                        <input type="text" class="form-control" name="immat" id="immat" placeholder="X-XXXX"
+                            pattern="[A-Z]{1}[-][A-Z]{4}" required>
                     </div>
                     <div class="mb-3">
                         <label for="dateDepart" class="form-label">Date de départ</label>
                         <input type="date" class="form-control" name="dateDepart" id="dateDepart" required>
                         <label for="heureDepart">Heure de départ</label>
-                        <input type="time" name="heureDepart" id="heureDepart"/ required>
+                        <input type="time" name="heureDepart" id="heureDepart" required>
                     </div>
                     <div class="mb-3">
                         <label for="dateArrivee" class="form-label">Date de d'arrivée</label>
@@ -24,8 +69,8 @@
                     </div>
                     <div class="form-floating mb-3">
                         <label for="aeroclub" class="form-label">Aeroclub</label>
-                        <select class="form-select" name ="aeroclub" id="aeroclub">
-                <!--TODO : mettre une value sur chaque aeroclub ???-->
+                        <select class="form-select" name="aeroclub" id="aeroclub">
+                            <!--TODO : mettre une value sur chaque aeroclub ???-->
                             <option value="Chavenay_Bertin">Bertin</option>
                             <option value="Chavenay_Caudron">Caudron</option>
                             <option value="Chavenay_Renault">Renault</option>
@@ -38,46 +83,9 @@
                             <option value=1>oui</option>
                             <option value=0>non</option>
                         </select>
-                    <button type="submit" class="btn btn-primary">Ajouter ce vol</button>
-                </form>         
+                        <button type="submit" class="btn btn-primary">Ajouter ce vol</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
-
-{% if liste %}
-<table class="table" data-toggle="table" data-search="true" data-pagination="true"
-data-page-size="8" data-page-list="[10, 25, 50, all]" data-show-export="true"
-data-export-types="['excel', 'xlsx', 'pdf','json', 'csv', 'txt', 'sql', 'doc']">
-    <thead>
-        <tr>
-            <th data-field="supp" data-align="center" data-force-hide="true">Suppression</th>
-            <th data-field="ac" data-sortable="true" data-align="center" data-force-hide="true">Aeroclub</th>
-            <th data-field="immat" data-sortable="true" data-align="center" data-force-hide="true">Immatriculation</th>
-            <th data-field="dep" data-sortable="true" data-align="center" data-force-hide="true">Départ</th>
-            <th data-field="arr" data-sortable="true" data-align="center" data-force-hide="true">Arrivée</th>
-            <th data-field="tdp" data-sortable="true" data-align="center" data-force-hide="true">Tour de piste</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for vol in liste %} 
-        <tr>
-            <td>
-                <a href="/suppVol/{{ vol.idVol }}">
-                    <i class="fa-solid fa-trash-can"></i>
-                </a>
-            </td>
-            <td> {{ vol.aeroclub }} </td>
-            <td> {{ vol.immat }} </td>
-            <td>{{ vol.depart.strftime('%A %d %B %Y') }}<br>{{ vol.depart.strftime('%H:%M') }}</td>
-            <td>{{ vol.arrivee.strftime('%A %d %B %Y') }}<br>{{ vol.arrivee.strftime('%H:%M') }}</td>
-            {% if vol.tourpiste|int == 1 %}
-                    <td>oui</td>
-                {% else %}
-                    <td>non</td>
-                {% endif %}
-        </tr>
-    {% endfor %}       
-    </tbody>
-</table>
-{% endif %}
