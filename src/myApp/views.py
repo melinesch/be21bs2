@@ -257,4 +257,9 @@ def addVol():
         print(msg)
         return redirect("/visualisation/" + msg)
     return redirect("/accueil/accessNotAllowed")
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template("index.html", maPage = "404.html", monTitre ="404")
     

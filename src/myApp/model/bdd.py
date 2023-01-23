@@ -5,6 +5,8 @@ import hashlib
 
 #################################################################################################################
 # connexion au serveur de la base de données
+
+
 def connexion():
     cnx = ""
     try:
@@ -22,9 +24,12 @@ def connexion():
 
 #################################################################################################################
 # fermeture de la connexion au serveur de la base de données
+
+
 def close_bd(cursor, cnx):
     cursor.close()
     cnx.close()
+
 
 def verifAuthData(login, mdp):
     try:
@@ -34,8 +39,8 @@ def verifAuthData(login, mdp):
         cursor = cnx.cursor(dictionary=True)
         sql = "SELECT * FROM identification WHERE login=%s and motPasse=%s"
         mdp = hashlib.sha256(mdp.encode())
-        mdpC = mdp.hexdigest() # mot de passe chiffré
-        param=(login, mdpC)
+        mdpC = mdp.hexdigest()  # mot de passe chiffré
+        param = (login, mdpC)
         cursor.execute(sql, param)
         user = cursor.fetchone()
         close_bd(cursor, cnx)
@@ -47,33 +52,37 @@ def verifAuthData(login, mdp):
     print(user)
     return msg, user
 
-#ajout d'un utilisateur
+# ajout d'un utilisateur
+
+
 def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
     try:
-        cnx,error=connexion()
-        cursor=cnx.cursor()
-        sql="INSERT into identification (idUser,nom,prenom,mail,login,motPasse,statut,newMdp,avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
-        param=(0,nom,prenom,mail,login,pwd,statut, newMdp, avatar)
+        cnx, error = connexion()
+        cursor = cnx.cursor()
+        sql = "INSERT into identification (idUser,nom,prenom,mail,login,motPasse,statut,newMdp,avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        param = (0, nom, prenom, mail, login, pwd, statut, newMdp, avatar)
         print(sql)
         print(param)
-        cursor.execute(sql,param)
-        #récupère le dernier IdUser généré par le serveur sql
-        lastId=cursor.lastrowid
+        cursor.execute(sql, param)
+        # récupère le dernier IdUser généré par le serveur sql
+        lastId = cursor.lastrowid
         cnx.commit()
-        close_bd(cursor,cnx)
-        msg="addUserOK"
+        close_bd(cursor, cnx)
+        msg = "addUserOK"
     except mysql.connector.Error as err:
-        lastId=None
-        msg="Failed add user data:{}".format(err)
+        lastId = None
+        msg = "Failed add user data:{}".format(err)
     return msg, lastId
 
-#modification d'un utilisateur
+# modification d'un utilisateur
+
+
 def update_userData(champ, newValue, idUser):
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()
         sql = "UPDATE identification SET " + champ + "= %s WHERE idUser = %s;"
-        param = (newValue, idUser)   
+        param = (newValue, idUser)
         cursor.execute(sql, param)
         cnx.commit()
         close_bd(cursor, cnx)
@@ -84,7 +93,9 @@ def update_userData(champ, newValue, idUser):
         msg = "Failed update user data : {}".format(err)
     return msg
 
-#ajout des vols 
+# ajout des vols
+
+
 def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
     try:
         cnx, error = connexion()
@@ -92,22 +103,24 @@ def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
         sql = "INSERT INTO vol (aeroclub, immat, depart, arrivee, tourpiste) VALUES (%s, %s, %s, %s, %s);"
         param = (aeroclub, immat, depart, arrivee, tourpiste)
         cursor.execute(sql, param)
-    #recupere le dernier idVol généré par le serveur sql
+    # recupere le dernier idVol généré par le serveur sql
         lastId = cursor.lastrowid
         cnx.commit()
         close_bd(cursor, cnx)
         msg = "addVolOK"
     except mysql.connector.Error as err:
-        lastId=None
+        lastId = None
         msg = "Failed add vol data: {}".format(err)
     return msg, lastId
 
 # récupérer tous les vols à partir de la BdD
+
+
 def get_volsData():
     try:
         cnx, error = connexion()
         if error is not None:
-           return error, None
+            return error, None
         cursor = cnx.cursor(dictionary=True)
         sql = "SELECT * FROM vol ORDER BY depart ASC, arrivee ASC"
         cursor.execute(sql)
@@ -120,6 +133,8 @@ def get_volsData():
     return msg, listeVol
 
 # suppression d'un vol
+
+
 def del_volData(idVol):
     try:
         cnx, error = connexion()
@@ -133,6 +148,7 @@ def del_volData(idVol):
     except mysql.connector.Error as err:
         msg = "Failed del vol data : {}".format(err)
         return msg
+
 
 def reset_volData(aeroclub, mindate, maxdate):
     try:
