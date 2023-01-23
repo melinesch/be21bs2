@@ -1,4 +1,15 @@
 /********** Template CSS **********/
+
+.gray_section {
+    background-color: #575757;
+	opacity: 0.27;
+	filter:alpha(opacity=27);
+}
+
+.medium_lines_section {
+    background-image: url(../img/medium_lines.png);
+}
+
 :root {
     --primary: #009CFF;
     --light: #F3F6F9;

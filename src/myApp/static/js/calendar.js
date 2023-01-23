@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", function(){
     scheduler.i18n.setLocale("fr")
     scheduler.plugins({
+        limit:true,
         year_view: true,
         minical: true
     });
@@ -13,7 +14,20 @@ document.addEventListener("DOMContentLoaded", function(){
     scheduler.config.last_hour = 21;
     scheduler.config.readonly = true;
 
-    scheduler.init('schedulerEnac',new Date(2023,01,12),"week");
+    scheduler.attachEvent("onDataRender", function(){
+        scheduler.markTimespan({  
+            days:  [0,1,2,3,4,5,6],               // marks each Friday  
+            zones: [7*60,8*60,13*60,14*60,20*60,21*60],
+            css:   "medium_lines_section"   // the applied css style
+        });
+    });
+
+    scheduler.init('schedulerEnac');
+
+
+    
+
+    scheduler.render()
 
     // Filtrage
 
@@ -29,14 +43,12 @@ document.addEventListener("DOMContentLoaded", function(){
             else {
                 return false
             }
-            
         }
 
-        // alert(est_dans('TDP:0','MVT:10 TDP:0 !'))
 
 
             scheduler.filter_week = function(id, event){
-                if(est_dans('TDP:0',event.text) & value=='tdp') {return true}
+                if(!(est_dans('MVT:0',event.text)) & est_dans('TDP:0',event.text) & value=='tdp') {return true}
                 else if(!est_dans('TDP:0',event.text) & value=='mvt') {return true}
                 else if (value=='both') {return true}
                 else { return false}

@@ -6,6 +6,7 @@ from random import randint
 import hashlib
 import pandas
 import os.path
+from os import remove
 import datetime, locale
 from .controller import auth, bib_vols
 
@@ -187,6 +188,7 @@ def upload():
 #@app.route("/fichiers")
 @app.route("/fichiers", methods=['GET', 'POST'])
 def fichiers():
+    remove('cal.json')
     if auth.checkRole("admin") :
         if "testFile" in request.files: #téléchargement du fichier excel
             file = request.files['testFile']
@@ -210,6 +212,7 @@ def fichiers():
         else:
             return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
     return redirect("/accueil/accessNotAllowed")
+    
     
 #route vers page visualisation
 @app.route('/visualisation')
