@@ -193,8 +193,9 @@ def upload():
     
 #gestion des fichiers excel 
 #@app.route("/fichiers")
-@app.route("/fichiers", methods=['GET', 'POST'])
-def fichiers():
+@app.route("/fichiers/", methods=['GET', 'POST'])
+@app.route("/fichiers/<infoMsg>", methods=['GET', 'POST'])
+def fichiers(infoMsg=""):
     remove('cal.json')
     if auth.checkRole("admin") :
         if "testFile" in request.files: #téléchargement du fichier excel
@@ -214,8 +215,9 @@ def fichiers():
                 if (vol['tour de piste'] != 1):
                     vol['tour de piste'] = 0
                 msg, lastId = bdd.add_volData(file.filename.replace(".xlsx", ""), vol['immat'], datetime.datetime.fromtimestamp(vol['depart'].timestamp()), datetime.datetime.fromtimestamp(vol['arrivee'].timestamp()), vol['tour de piste'])
-                print (str(lastId) + " " + vol['immat'] + " -- " + msg)
-            return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename)
+                #print (str(lastId) + " " + vol['immat'] + " -- " + msg)
+            infoMsg = "uploadOK"
+            return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename, info = infoMsg)
         else:
             return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
     return redirect("/accueil/accessNotAllowed")
@@ -244,7 +246,7 @@ def suppVol(idVol=""):
     if auth.checkRole("admin") :
         msg = bdd.del_volData(idVol)
         print (msg)
-        return redirect("/visualisation")
+        return redirect("/visualisation/suppVolOK")
     return redirect("/accueil/accessNotAllowed")
 
 # réception des données du formulaire d'ajout manuel d'un vol
