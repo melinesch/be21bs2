@@ -116,6 +116,11 @@
                         La confirmation du mot de passe ne correspond pas, ou le nouveau mot de passe est vide ; merci
                         de retenter votre chance...
                     </div>
+                    {% elif info and info == "duplicate" %}
+                    <div class="alert alert-danger text-center">
+                        <span class="badge badge-pill badge-danger">Error</span>
+                        Horreur! L'e-mail et/ou le login sont déjà pris. Un petit effort d'originalité svp. 
+                    </div>
                     {% elif info and info == "logoutOK" %}
                     <div class="alert alert-success text-center">
                         <span class="badge badge-pill badge-success">Success</span>

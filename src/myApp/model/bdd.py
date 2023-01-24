@@ -51,9 +51,23 @@ def verifAuthData(login, mdp):
     return msg, user
 
 # verif unicité de l'utilisateur à créer
-#######
-#######
-#######
+def verifDuplicateData(login, mail):
+    try:
+        cnx, error = connexion()
+        if error is not None:
+            return error, None
+        cursor = cnx.cursor()
+        sql = "SELECT COUNT(*) FROM identification WHERE login=%s or mail=%s"
+        param = (login, mail)
+        cursor.execute(sql, param)
+        (count,) = cursor.fetchone()
+        print(count)
+        close_bd(cursor, cnx)
+        msg = "OK"
+    except mysql.connector.Error as err:
+        count = 0
+        msg = "Failed get duplicate data : {}".format(err)
+    return msg, count
 
 # ajout d'un utilisateur
 def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):

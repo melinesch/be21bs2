@@ -115,19 +115,16 @@ def addUser():
         nom = request.form["nom"]
         prenom = request.form["prenom"]
         mail = request.form["mail"]
+        login = request.form["login"]
         print(nom + " " + prenom + " " + mail)
         # verif si utilisateur existe déjà
-        
-        #######
-        #######
-        #######
-        
-        
+        msg, count = bdd.verifDuplicateData(login, mail)
+        if int(count) > 0 :
+            return redirect("/compte/duplicate")
         newMdp = 2
         motPasse = ''
         for i in range(10):
             motPasse += ''.join(secrets.choice(alphabet))
-        login = request.form["login"]
         mdp = hashlib.sha256(motPasse.encode())
         mdpC = mdp.hexdigest() #mot de passe chiffré
         print(mdpC)
