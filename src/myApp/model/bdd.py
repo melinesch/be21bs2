@@ -50,9 +50,12 @@ def verifAuthData(login, mdp):
     print(user)
     return msg, user
 
+# verif unicité de l'utilisateur à créer
+#######
+#######
+#######
+
 # ajout d'un utilisateur
-
-
 def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
     try:
         cnx, error = connexion()

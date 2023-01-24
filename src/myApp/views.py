@@ -116,6 +116,13 @@ def addUser():
         prenom = request.form["prenom"]
         mail = request.form["mail"]
         print(nom + " " + prenom + " " + mail)
+        # verif si utilisateur existe déjà
+        
+        #######
+        #######
+        #######
+        
+        
         newMdp = 2
         motPasse = ''
         for i in range(10):
