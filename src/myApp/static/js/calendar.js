@@ -48,13 +48,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         scheduler.filter_day = function (id, event) {
-            if (est_dans('TDP:0', event.text) & value == 'tdp') { return true }
+            if (!(est_dans('MVT:0', event.text)) & est_dans('TDP:0', event.text) & value == 'tdp') { return true }
+            else if (!est_dans('TDP:0', event.text) & value == 'mvt') { return true }
             else if (value == 'both') { return true }
             else { return false }
         }
 
         scheduler.filter_month = function (id, event) {
-            if (est_dans('TDP:0', event.text) & value == 'tdp') { return true }
+            if (!(est_dans('MVT:0', event.text)) & est_dans('TDP:0', event.text) & value == 'tdp') { return true }
+            else if (!est_dans('TDP:0', event.text) & value == 'mvt') { return true }
             else if (value == 'both') { return true }
             else { return false }
         }
