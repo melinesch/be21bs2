@@ -188,7 +188,8 @@ def upload():
 #@app.route("/fichiers")
 @app.route("/fichiers", methods=['GET', 'POST'])
 def fichiers():
-    remove('cal.json')
+    if os.path.exists('cal.json'):
+        remove('cal.json')
     if auth.checkRole("admin") :
         if "testFile" in request.files: #téléchargement du fichier excel
             file = request.files['testFile']
