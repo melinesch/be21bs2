@@ -12,7 +12,7 @@ WEB_SERVER = {
 # configuration du serveur de BDD
 DB_SERVER = {
 
-    "user": "phpmyadmin",
+    "user": "root",
     "password": "root",
     "host": "localhost",
     "port": 3306,
