@@ -115,12 +115,16 @@ def addUser():
         nom = request.form["nom"]
         prenom = request.form["prenom"]
         mail = request.form["mail"]
+        login = request.form["login"]
         print(nom + " " + prenom + " " + mail)
+        # verif si utilisateur existe déjà
+        msg, count = bdd.verifDuplicateData(login, mail)
+        if int(count) > 0 :
+            return redirect("/compte/duplicate")
         newMdp = 2
         motPasse = ''
         for i in range(10):
             motPasse += ''.join(secrets.choice(alphabet))
-        login = request.form["login"]
         mdp = hashlib.sha256(motPasse.encode())
         mdpC = mdp.hexdigest() #mot de passe chiffré
         print(mdpC)
@@ -186,8 +190,10 @@ def upload():
     
 #gestion des fichiers excel 
 #@app.route("/fichiers")
-@app.route("/fichiers", methods=['GET', 'POST'])
-def fichiers():
+
+@app.route("/fichiers/", methods=['GET', 'POST'])
+@app.route("/fichiers/<infoMsg>", methods=['GET', 'POST'])
+def fichiers(infoMsg=""):
     if os.path.exists('cal.json'):
         remove('cal.json')
     if auth.checkRole("admin") :
@@ -208,8 +214,9 @@ def fichiers():
                 if (vol['tour de piste'] != 1):
                     vol['tour de piste'] = 0
                 msg, lastId = bdd.add_volData(file.filename.replace(".xlsx", ""), vol['immat'], datetime.datetime.fromtimestamp(vol['depart'].timestamp()), datetime.datetime.fromtimestamp(vol['arrivee'].timestamp()), vol['tour de piste'])
-                print (str(lastId) + " " + vol['immat'] + " -- " + msg)
-            return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename)
+                #print (str(lastId) + " " + vol['immat'] + " -- " + msg)
+            infoMsg = "uploadOK"
+            return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename, info = infoMsg)
         else:
             return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
     return redirect("/accueil/accessNotAllowed")
@@ -238,7 +245,7 @@ def suppVol(idVol=""):
     if auth.checkRole("admin") :
         msg = bdd.del_volData(idVol)
         print (msg)
-        return redirect("/visualisation")
+        return redirect("/visualisation/suppVolOK")
     return redirect("/accueil/accessNotAllowed")
 
 # réception des données du formulaire d'ajout manuel d'un vol

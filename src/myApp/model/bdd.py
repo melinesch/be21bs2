@@ -24,13 +24,11 @@ def connexion():
 
 #################################################################################################################
 # fermeture de la connexion au serveur de la base de données
-
-
 def close_bd(cursor, cnx):
     cursor.close()
     cnx.close()
 
-
+# check auth data
 def verifAuthData(login, mdp):
     try:
         cnx, error = connexion()
@@ -52,9 +50,26 @@ def verifAuthData(login, mdp):
     print(user)
     return msg, user
 
+# verif unicité de l'utilisateur à créer
+def verifDuplicateData(login, mail):
+    try:
+        cnx, error = connexion()
+        if error is not None:
+            return error, None
+        cursor = cnx.cursor()
+        sql = "SELECT COUNT(*) FROM identification WHERE login=%s or mail=%s"
+        param = (login, mail)
+        cursor.execute(sql, param)
+        (count,) = cursor.fetchone()
+        print(count)
+        close_bd(cursor, cnx)
+        msg = "OK"
+    except mysql.connector.Error as err:
+        count = 0
+        msg = "Failed get duplicate data : {}".format(err)
+    return msg, count
+
 # ajout d'un utilisateur
-
-
 def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
     try:
         cnx, error = connexion()
@@ -75,8 +90,6 @@ def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
     return msg, lastId
 
 # modification d'un utilisateur
-
-
 def update_userData(champ, newValue, idUser):
     try:
         cnx, error = connexion()
@@ -94,8 +107,6 @@ def update_userData(champ, newValue, idUser):
     return msg
 
 # ajout des vols
-
-
 def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
     try:
         cnx, error = connexion()
@@ -114,8 +125,6 @@ def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
     return msg, lastId
 
 # récupérer tous les vols à partir de la BdD
-
-
 def get_volsData():
     try:
         cnx, error = connexion()
@@ -133,8 +142,6 @@ def get_volsData():
     return msg, listeVol
 
 # suppression d'un vol
-
-
 def del_volData(idVol):
     try:
         cnx, error = connexion()
@@ -149,7 +156,7 @@ def del_volData(idVol):
         msg = "Failed del vol data : {}".format(err)
         return msg
 
-
+# Remove vol data in imported range
 def reset_volData(aeroclub, mindate, maxdate):
     try:
         cnx, error = connexion()

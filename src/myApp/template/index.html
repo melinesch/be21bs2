@@ -56,7 +56,7 @@
                                 {% if session["idUser"] %} <!--utilisateur connecté-->
                                 <a href="/logout" class="nav-item nav-link font-weight-bold"></i>Se déconnecter</a>
                                 {% else %} <!-- utilisateur non connecté-->
-                                <a href="/login" class="nav-item nav-link font-weight-bold"></i>Se Connecter</a>
+                                <a href="/login" class="nav-item nav-link font-weight-bold"></i>Se connecter</a>
                                 {% endif %}
                                 <a href="/webmaster" class="nav-item nav-link font-weight-bold"></i>Webmasters</a>
 
@@ -78,8 +78,6 @@
                                 {% endif %}
                                 {% endif %}
 
-
-
                             </li>
 
                     </div>
@@ -87,53 +85,59 @@
                 <div class="col py-3">
                     <!-- Content Start -->
 
-
-
-                    {% if info and info=="authOK" %}
+                    {% if info and info == "authOK" %}
                     <div class="alert alert-success text-center">
                         <span class="badge badge-pill badge-success">Success</span>
                         Authentification réussie
                     </div>
-                    {% elif info and info=="authEchec" %}
+                    {% elif info and info == "authEchec" %}
                     <div class="alert alert-danger text-center">
                         <span class="badge badge-pill badge-danger">Error</span>
                         Authentification refusée; merci de retenter votre chance...
                     </div>
-                    {% elif info and info=="accessNotAllowed" %}
+                    {% elif info and info == "accessNotAllowed" %}
                     <div class="alert alert-danger text-center">
                         <span class="badge badge-pill badge-danger">Error</span>
                         Accès refusé; merci de vous connecter ou de passer outre...
                     </div>
-                    {% elif info and info=="updateUserOK" %}
+                    {% elif info and info == "updateUserOK" %}
                     <div class="alert alert-success text-center">
                         <span class="badge badge-pill badge-success">Success</span>
                         Utilisateur modifié !
                     </div>
-                    {% elif info and info=="updateUserMdpOK" %}
+                    {% elif info and info == "updateUserMdpOK" %}
                     <div class="alert alert-success text-center">
                         <span class="badge badge-pill badge-success">Success</span>
                         Mot de passe modifié !
                     </div>
-                    {% elif info and info=="passwordNotMatched" %}
+                    {% elif info and info == "passwordNotMatched" %}
                     <div class="alert alert-danger text-center">
                         <span class="badge badge-pill badge-danger">Error</span>
                         La confirmation du mot de passe ne correspond pas, ou le nouveau mot de passe est vide ; merci
                         de retenter votre chance...
                     </div>
-                    {% elif info and info=="logoutOK" %}
+                    {% elif info and info == "duplicate" %}
+                    <div class="alert alert-danger text-center">
+                        <span class="badge badge-pill badge-danger">Error</span>
+                        Horreur! L'e-mail et/ou le login sont déjà pris. Un petit effort d'originalité svp. 
+                    </div>
+                    {% elif info and info == "logoutOK" %}
                     <div class="alert alert-success text-center">
                         <span class="badge badge-pill badge-success">Success</span>
                         Vous avez été déconnecté. Ce message s'auto-détruira dans 10 secondes, 9, 8, 7...
                     </div>
-                    {% elif info and info =="addVolOK" %}
+                    {% elif info and info == "uploadOK" %}
                     <div class="alert alert-success text-center">
-                        <span class="badge badge-pill badge-success"> Succès</span>Nouveau vol ajouté
+                        <span class="badge badge-pill badge-success"> Succès</span> Fichier téléchargé avec succès
                     </div>
-                    <!--{% elif info and "Failed" in info %} 
-                            <div class="alert alert-danger text-center">
-                                <span class="badge badge-pill badge-danger">Error</span>
-                            {{ info }}
-                            </div>  -->
+                    {% elif info and info == "addVolOK" %}
+                    <div class="alert alert-success text-center">
+                        <span class="badge badge-pill badge-success"> Succès</span> Nouveau vol ajouté
+                    </div>
+                    {% elif info and info == "suppVolOK" %}
+                    <div class="alert alert-success text-center">
+                        <span class="badge badge-pill badge-success"> Succès </span> Vol supprimé
+                    </div>
                     {% endif %}
 
                     {% include("layout/" + maPage) %}
