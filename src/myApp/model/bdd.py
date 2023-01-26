@@ -3,11 +3,11 @@ from mysql.connector import errorcode
 from ..config import DB_SERVER
 import hashlib
 
-#################################################################################################################
-# connexion au serveur de la base de données
-
 
 def connexion():
+    """
+    Connexion au serveur de la base de données
+    """
     cnx = ""
     try:
         cnx = mysql.connector.connect(**DB_SERVER)
@@ -22,14 +22,19 @@ def connexion():
             print(err)
     return cnx, error
 
-#################################################################################################################
-# fermeture de la connexion au serveur de la base de données
+
 def close_bd(cursor, cnx):
+    """
+    Fermeture de la connexion au serveur de la base de données
+    """
     cursor.close()
     cnx.close()
 
-# check auth data
+
 def verifAuthData(login, mdp):
+    """
+    check auth data
+    """
     try:
         cnx, error = connexion()
         if error is not None:
@@ -50,8 +55,11 @@ def verifAuthData(login, mdp):
     print(user)
     return msg, user
 
-# verif unicité de l'utilisateur à créer
+
 def verifDuplicateData(login, mail):
+    """
+    Verifie unicité de l'utilisateur à créer
+    """
     try:
         cnx, error = connexion()
         if error is not None:
@@ -69,8 +77,11 @@ def verifDuplicateData(login, mail):
         msg = "Failed get duplicate data : {}".format(err)
     return msg, count
 
-# ajout d'un utilisateur
+
 def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
+    """
+    Ajout d'un utilisateur
+    """
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()
@@ -79,7 +90,6 @@ def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
         print(sql)
         print(param)
         cursor.execute(sql, param)
-        # récupère le dernier IdUser généré par le serveur sql
         lastId = cursor.lastrowid
         cnx.commit()
         close_bd(cursor, cnx)
@@ -89,8 +99,11 @@ def add_userData(nom, prenom, mail, login, pwd, statut, newMdp, avatar):
         msg = "Failed add user data:{}".format(err)
     return msg, lastId
 
-# modification d'un utilisateur
+
 def update_userData(champ, newValue, idUser):
+    """
+    Modification d'un utilisateur
+    """
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()
@@ -106,15 +119,17 @@ def update_userData(champ, newValue, idUser):
         msg = "Failed update user data : {}".format(err)
     return msg
 
-# ajout des vols
+
 def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
+    """
+    Ajout des vols
+    """
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()
         sql = "INSERT INTO vol (aeroclub, immat, depart, arrivee, tourpiste) VALUES (%s, %s, %s, %s, %s);"
         param = (aeroclub, immat, depart, arrivee, tourpiste)
         cursor.execute(sql, param)
-    # recupere le dernier idVol généré par le serveur sql
         lastId = cursor.lastrowid
         cnx.commit()
         close_bd(cursor, cnx)
@@ -124,8 +139,11 @@ def add_volData(aeroclub, immat, depart, arrivee, tourpiste):
         msg = "Failed add vol data: {}".format(err)
     return msg, lastId
 
-# récupérer tous les vols à partir de la BdD
+
 def get_volsData():
+    """
+    Récupérer tous les vols à partir de la BdD
+    """
     try:
         cnx, error = connexion()
         if error is not None:
@@ -141,8 +159,11 @@ def get_volsData():
         msg = "Failed get vols data : {}".format(err)
     return msg, listeVol
 
-# suppression d'un vol
+
 def del_volData(idVol):
+    """
+    Suppression d'un vol
+    """
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()
@@ -156,8 +177,11 @@ def del_volData(idVol):
         msg = "Failed del vol data : {}".format(err)
         return msg
 
-# Remove vol data in imported range
+
 def reset_volData(aeroclub, mindate, maxdate):
+    """
+    Remove vol data in imported range
+    """
     try:
         cnx, error = connexion()
         cursor = cnx.cursor()

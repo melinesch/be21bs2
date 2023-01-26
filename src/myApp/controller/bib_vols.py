@@ -53,7 +53,6 @@ def construction_dico(vols):
             while date_actu != larr:
                 h = str(date_actu[0])+'-'+str(date_actu[1]) + \
                     '-'+str(date_actu[2])+'-'+str(date_actu[3])
-                # for _ in range(NB_MVT_TDP):
                 res.append(h)
                 date_actu = heure_suivante(date_actu)
         else:
@@ -84,7 +83,7 @@ def nb_vols(l):
     for (immat, tdp) in l:
         if tdp == 1:
             nb_tdp += 1
-            nb_volsv+=NB_MVT_TDP
+            nb_volsv += NB_MVT_TDP
         else:
             nb_volsv += 1
     return [nb_volsv, nb_tdp]
@@ -199,7 +198,6 @@ def extract_bdd():
 
 def final_cal():
     if not os.path.exists('cal.json') or not CACHE_BASE:
-        # f = open('cal.json','w')
         vols = extract_bdd()
         dico = construction_dico(vols)
         dico = heures_concerne(dico)
