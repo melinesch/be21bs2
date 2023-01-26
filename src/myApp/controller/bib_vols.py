@@ -53,8 +53,8 @@ def construction_dico(vols):
             while date_actu != larr:
                 h = str(date_actu[0])+'-'+str(date_actu[1]) + \
                     '-'+str(date_actu[2])+'-'+str(date_actu[3])
-                for _ in range(NB_MVT_TDP):
-                    res.append(h)
+                # for _ in range(NB_MVT_TDP):
+                res.append(h)
                 date_actu = heure_suivante(date_actu)
         else:
             date_fin = [i for i in larr]
@@ -79,13 +79,15 @@ def construction_dico(vols):
 
 
 def nb_vols(l):
-    nb_vols = 0
+    nb_volsv = 0
     nb_tdp = 0
     for (immat, tdp) in l:
-        nb_vols += 1
         if tdp == 1:
             nb_tdp += 1
-    return [nb_vols, nb_tdp]
+            nb_volsv+=NB_MVT_TDP
+        else:
+            nb_volsv += 1
+    return [nb_volsv, nb_tdp]
 
 
 def heures_concerne(dico):

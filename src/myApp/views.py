@@ -190,6 +190,7 @@ def upload():
     
 #gestion des fichiers excel 
 #@app.route("/fichiers")
+
 @app.route("/fichiers/", methods=['GET', 'POST'])
 @app.route("/fichiers/<infoMsg>", methods=['GET', 'POST'])
 def fichiers(infoMsg=""):
