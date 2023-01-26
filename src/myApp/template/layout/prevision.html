@@ -1,14 +1,24 @@
 <h1>Prévision des vols</h1>
 
 
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <select class="form-control" name="filtre" id="filtre">
+                <option value="both">Mouvements et Tours de piste</option>
+                <option value="tdp">Mouvements</option>
+                <option value="mvt">Tours de piste</option>
+            </select>
+        </div>
+        <div class="col-2">
 
-<select class="form-control" name="filtre" id="filtre">
-    <option value="both">Mouvements et Tours de piste</option>
-    <option value="tdp">Mouvements</option>
-    <option value="mvt">Tours de piste</option>
-</select>
+            <button type="submit" class="btn btn-primary" onclick="scheduler.exportToExcel()">
+                <i class="fa-solid fa-file-export"></i> Export vers Excel
+            </button>
 
-
+        </div>
+    </div>
+</div>
 
 <div id="schedulerEnac" class="dhx_cal_container" style='width:100%; height:100vh;'>
     <div class="dhx_cal_navline">
@@ -26,4 +36,3 @@
     <div class="dhx_cal_header"></div>
     <div class="dhx_cal_data"></div>
 </div>
-<input value="Export to Excel" type="button" onclick="scheduler.exportToExcel()">
