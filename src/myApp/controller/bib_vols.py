@@ -136,13 +136,21 @@ def couleur(mvt, tdp, solActive):
     return color
 
 
-def construit_tableau_event(dico):
+def construit_tableau_event(dico, filtre):
     res = []
     for key in dico:
         if key[-2]+key[-1] != '13' and key[-2]+key[-1] != '-7' and key[-2]+key[-1] != '20':
             mvt, tdp = dico[key]
-            event = {'text': 'MVT:'+str(mvt)+'   TDP:'+str(tdp), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
+            if filtre == 'both':
+                event = {'text': 'MVT:'+str(mvt)+'   TDP:'+str(tdp), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
                 convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
+            elif filtre == 'tdp':
+                event = {'text': 'TDP:'+str(tdp), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
+                convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
+            elif filtre == 'mvt':
+                event = {'text': 'MVT:'+str(mvt-tdp*NB_MVT_TDP), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
+                convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
+                
             res.append(event)
     return res
 
@@ -196,15 +204,15 @@ def extract_bdd():
 # --------------------------------------------------------------
 
 
-def final_cal():
-    if not os.path.exists('cal.json') or not CACHE_BASE:
+def final_cal(filtre):
+    if not os.path.exists('cal'+filtre+'.json') or not CACHE_BASE:
         vols = extract_bdd()
         dico = construction_dico(vols)
         dico = heures_concerne(dico)
         res = construit_tableau_event(
-            dico) + construit_tableau_event_sans_vol(dico)
-        write_json(convert_json(res), 'cal.json')
+            dico,filtre) + construit_tableau_event_sans_vol(dico)
+        write_json(convert_json(res), 'cal'+filtre+'.json')
     else:
-        f = open('cal.json')
+        f = open('cal'+filtre+'.json')
         res = json.load(f)
     return res
