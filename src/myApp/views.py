@@ -2,12 +2,13 @@ from flask import Flask, render_template, session, request, redirect, jsonify
 from myApp.model import bdd as bdd
 import secrets
 import string
-from random import randint 
+from random import randint
 import hashlib
 import pandas
 import os.path
 from os import remove
-import datetime, locale
+import datetime
+import locale
 from .controller import auth, bib_vols
 
 app = Flask(__name__)
@@ -20,98 +21,110 @@ special_chars = string.punctuation
 alphabet = letters + digits + special_chars
 locale.setlocale(locale.LC_ALL, "fr_FR.UTF-8")
 
+
 @app.before_request
 def make_session_permanent():
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(minutes=5)
-    
-#page accueil
+
+# page accueil
+
+
 @app.route("/")
 @app.route("/accueil")
 @app.route("/accueil/<infoMsg>")
 def index(infoMsg=""):
-    return render_template("index.html", maPage = "accueil.html", monTitre = "Accueil", info=infoMsg)
+    return render_template("index.html", maPage="accueil.html", monTitre="Accueil", info=infoMsg)
+
 
 @app.route('/webmaster')
 def webmaster():
-    if auth.checkRole("guest") :
-        return render_template("index.html", maPage = "webmaster.html", monTitre = "Webmasters")
+    if auth.checkRole("guest"):
+        return render_template("index.html", maPage="webmaster.html", monTitre="Webmasters")
     return redirect("/accueil/accessNotAllowed")
+
 
 @app.route('/prevision')
 @app.route('/prevision/<infoMsg>')
-def previsions(infoMsg = "") :
-    if auth.checkRole("member") :
-        return render_template("index.html", maPage = "prevision.html", monTitre = "Prévisions", info = infoMsg)
+def previsions(infoMsg=""):
+    if auth.checkRole("member"):
+        return render_template("index.html", maPage="prevision.html", monTitre="Prévisions", info=infoMsg)
     return redirect("/accueil/accessNotAllowed")
+
 
 @app.route('/compte')
 @app.route('/compte/<infoMsg>')
 @app.route('/compte/<infoMsg>/<pwd>')
 def compte(infoMsg="", pwd=""):
-    if auth.checkRole("admin") :
-        return render_template("index.html", maPage = "compte.html", monTitre = "Création de compte", info=infoMsg, pwd=pwd)
+    if auth.checkRole("admin"):
+        return render_template("index.html", maPage="compte.html", monTitre="Création de compte", info=infoMsg, pwd=pwd)
     return redirect("/accueil/accessNotAllowed")
+
 
 @app.route('/login')
 @app.route('/login/<infoMsg>')
 def login(infoMsg=""):
-    return render_template("index.html", maPage = "login.html", monTitre = "Se connecter", info=infoMsg)
+    return render_template("index.html", maPage="login.html", monTitre="Se connecter", info=infoMsg)
 
-#réception des données de connexion
+# réception des données de connexion
+
+
 @app.route("/connecter", methods=["POST"])
 def connecter():
-    login=request.form['login']
-    mdp=request.form['mdp']
-    #vérification de paramètres en BDD
-    msg, user = bdd.verifAuthData(login,mdp)
+    login = request.form['login']
+    mdp = request.form['mdp']
+    # vérification de paramètres en BDD
+    msg, user = bdd.verifAuthData(login, mdp)
     print([msg, user, session])
 
     try:
-        #authentification réussie
-        #initialisation des sessions
-        session["idUser"]=user["idUser"]
-        session["nom"]=user["nom"]
-        session["prenom"]=user["prenom"]
-        session["avatar"]=user["avatar"]
-        session["login"]=user["login"]
-        session["statut"]=user["statut"]
-        session["mail"]=user["mail"]
-        session["newMdp"]=user["newMdp"]
+        # authentification réussie
+        # initialisation des sessions
+        session["idUser"] = user["idUser"]
+        session["nom"] = user["nom"]
+        session["prenom"] = user["prenom"]
+        session["avatar"] = user["avatar"]
+        session["login"] = user["login"]
+        session["statut"] = user["statut"]
+        session["mail"] = user["mail"]
+        session["newMdp"] = user["newMdp"]
 
         if session["newMdp"] == 2:
             return redirect("/mdp/authOK")
-            
+
         if session["statut"] == 0:
             return redirect("/compte/authOK")
         else:
             return redirect("/prevision/authOK")
-    
+
     except TypeError as err:
-        #echec d'authentification
+        # echec d'authentification
         print("Failed verifAuth:{}".format(err))
-        
+
         return redirect("/login/authEchec")
-    
+
+
 @app.route("/logout")
 def deconnecter():
-    #authentification réussie
-    #initialisation des sessions
-    session["idUser"]=""
-    session["nom"]=""
-    session["prenom"]=""
-    session["avatar"]=""
-    session["login"]=""
-    session["statut"]=""
-    session["mail"]=""
-    session["newMdp"]=""
+    # authentification réussie
+    # initialisation des sessions
+    session["idUser"] = ""
+    session["nom"] = ""
+    session["prenom"] = ""
+    session["avatar"] = ""
+    session["login"] = ""
+    session["statut"] = ""
+    session["mail"] = ""
+    session["newMdp"] = ""
 
     return redirect("/accueil/logoutOK")
-  
-#réception des données du formulaire de création de compte
+
+# réception des données du formulaire de création de compte
+
+
 @app.route("/addUser", methods=['POST'])
 def addUser():
-    if auth.checkRole("admin") :
+    if auth.checkRole("admin"):
         nom = request.form["nom"]
         prenom = request.form["prenom"]
         mail = request.form["mail"]
@@ -119,55 +132,60 @@ def addUser():
         print(nom + " " + prenom + " " + mail)
         # verif si utilisateur existe déjà
         msg, count = bdd.verifDuplicateData(login, mail)
-        if int(count) > 0 :
+        if int(count) > 0:
             return redirect("/compte/duplicate")
         newMdp = 2
         motPasse = ''
         for i in range(10):
             motPasse += ''.join(secrets.choice(alphabet))
         mdp = hashlib.sha256(motPasse.encode())
-        mdpC = mdp.hexdigest() #mot de passe chiffré
+        mdpC = mdp.hexdigest()  # mot de passe chiffré
         print(mdpC)
         print("user password, to be sent to the user '" + login + "': " + motPasse)
         statut = int(request.form["statut"])
         a = randint(1, 16)
         avatar = "" + str(a) + ".png"
-        msg, lastId = bdd.add_userData(nom, prenom, mail, login, mdpC, statut, newMdp, avatar)
+        msg, lastId = bdd.add_userData(
+            nom, prenom, mail, login, mdpC, statut, newMdp, avatar)
         print(msg)
         return redirect("/compte/" + msg + "/" + motPasse)
     return redirect("/accueil/accessNotAllowed")
 
-#route nouveau mot de passe
+# route nouveau mot de passe
+
+
 @app.route('/mdp')
 @app.route('/mdp/<infoMsg>')
 def mdp(infoMsg=""):
-    if auth.checkRole("member") :
-        return render_template("index.html", maPage = "mdp.html", monTitre = "Changer le mot de passe", info=infoMsg)
+    if auth.checkRole("member"):
+        return render_template("index.html", maPage="mdp.html", monTitre="Changer le mot de passe", info=infoMsg)
     return redirect("/accueil/accessNotAllowed")
 
-#réception des données du formulaire de modification de mot de passe
+# réception des données du formulaire de modification de mot de passe
+
+
 @app.route("/changeMdp", methods=['POST'])
 def changeMdp():
-    if auth.checkRole("member") :
+    if auth.checkRole("member"):
         # Récupération des données du formulaire
         oldMdp = request.form["oldMdp"]
         mdp = request.form["mdp"]
         confirmMdp = request.form["confirmMdp"]
-        
+
         # Vérification de l'ancien mot de passe
         verif, user = bdd.verifAuthData(session["login"], oldMdp)
         if (verif != "authOK"):
             return redirect("/mdp/" + msg)
-        
+
         # Vérification de la cohérence de confirmation
         if (mdp == "" or mdp != confirmMdp):
             return redirect("/mdp/passwordNotMatched")
-        
+
         # Actions d'enregistrement
         newMdp = 0
-        
+
         mdp = hashlib.sha256(mdp.encode())
-        mdpC = mdp.hexdigest() #mot de passe chiffré
+        mdpC = mdp.hexdigest()  # mot de passe chiffré
         print(confirmMdp)
         print(mdpC)
         print(session["idUser"])
@@ -181,77 +199,106 @@ def changeMdp():
     return redirect("/accueil/accessNotAllowed")
 
 
-#route vers page upload
+# route vers page upload
 @app.route('/upload')
 def upload():
-    if auth.checkRole("admin") :
-        return render_template("index.html", maPage = "upload.html", monTitre = "Page Import de données")
+    if auth.checkRole("admin"):
+        return render_template("index.html", maPage="upload.html", monTitre="Page Import de données")
     return redirect("/accueil/accessNotAllowed")
-    
-#gestion des fichiers excel 
-#@app.route("/fichiers")
+
+# gestion des fichiers excel
+# @app.route("/fichiers")
+
 
 @app.route("/fichiers/", methods=['GET', 'POST'])
 @app.route("/fichiers/<infoMsg>", methods=['GET', 'POST'])
 def fichiers(infoMsg=""):
-    if os.path.exists('cal.json'):
-        remove('cal.json')
-    if auth.checkRole("admin") :
-        if "testFile" in request.files: #téléchargement du fichier excel
+    if os.path.exists('calboth.json'):
+        remove('calboth.json')
+    if os.path.exists('calmvt.json'):
+        remove('calmvt.json')
+    if os.path.exists('caltdp.json'):
+        remove('caltdp.json')
+
+    if auth.checkRole("admin"):
+        if "testFile" in request.files:  # téléchargement du fichier excel
             file = request.files['testFile']
             APP_ROOT = os.path.dirname(os.path.abspath(__file__))
             xls = pandas.read_excel(APP_ROOT + "/files/" + file.filename)
             data = xls.to_dict('records')
             print([file.filename, data])
-            #suppression des vols sur la même plage de dates
+            # suppression des vols sur la même plage de dates
             listDate = [d.get('depart').timestamp() for d in data]
             mindate = datetime.datetime.fromtimestamp(min(listDate))
             maxdate = datetime.datetime.fromtimestamp(max(listDate))
             #print(datetime.datetime.fromtimestamp(mindate.strftime('%A %d %B %Y')))
-            msg = bdd.reset_volData(file.filename.replace(".xlsx", ""), mindate, maxdate)
-            #ajout de tous les vols dans la table vols
-            for vol in data :
+            msg = bdd.reset_volData(file.filename.replace(
+                ".xlsx", ""), mindate, maxdate)
+            # ajout de tous les vols dans la table vols
+            for vol in data:
                 if (vol['tour de piste'] != 1):
                     vol['tour de piste'] = 0
-                msg, lastId = bdd.add_volData(file.filename.replace(".xlsx", ""), vol['immat'], datetime.datetime.fromtimestamp(vol['depart'].timestamp()), datetime.datetime.fromtimestamp(vol['arrivee'].timestamp()), vol['tour de piste'])
+                msg, lastId = bdd.add_volData(file.filename.replace(".xlsx", ""), vol['immat'], datetime.datetime.fromtimestamp(
+                    vol['depart'].timestamp()), datetime.datetime.fromtimestamp(vol['arrivee'].timestamp()), vol['tour de piste'])
                 #print (str(lastId) + " " + vol['immat'] + " -- " + msg)
             infoMsg = "uploadOK"
-            return render_template("index.html", maPage = "fichiers.html", vols = data, monTitre = "Téléchargement terminé", fileName = file.filename, info = infoMsg)
+            return render_template("index.html", maPage="fichiers.html", vols=data, monTitre="Téléchargement terminé", fileName=file.filename, info=infoMsg)
         else:
-            return render_template("index.html", maPage = "fichiers.html", monTitre = "Page téléchargement")
+            return render_template("index.html", maPage="fichiers.html", monTitre="Page téléchargement")
     return redirect("/accueil/accessNotAllowed")
-    
-    
-#route vers page visualisation
+
+
+# route vers page visualisation
 @app.route('/visualisation')
 @app.route('/visualisation/<infoMsg>')
 def visualisation(infoMsg=""):
-    if auth.checkRole("admin") :
+    if auth.checkRole("admin"):
         msg, listeVol = bdd.get_volsData()
         print(msg)
-        return render_template("index.html", maPage = "visualisation.html", liste = listeVol, monTitre ="Page Visualisation", info = infoMsg)
+        return render_template("index.html", maPage="visualisation.html", liste=listeVol, monTitre="Page Visualisation", info=infoMsg)
     return redirect("/accueil/accessNotAllowed")
+
 
 @app.route('/getCalendar', methods=["POST"])
 def getCalendar():
-    if auth.checkRole("member") :
-        dict = bib_vols.final_cal()
+    if auth.checkRole("member"):
+        dict = bib_vols.final_cal('both')
         return jsonify(dict)
     return redirect("/accueil/accessNotAllowed")
-    
+
+
+@app.route('/getCalendar_tdp', methods=["POST"])
+def getCalendar_tdp():
+    if auth.checkRole("member"):
+        dict = bib_vols.final_cal('tdp')
+        return jsonify(dict)
+    return redirect("/accueil/accessNotAllowed")
+
+
+@app.route('/getCalendar_mvt', methods=["POST"])
+def getCalendar_mvt():
+    if auth.checkRole("member"):
+        dict = bib_vols.final_cal('mvt')
+        return jsonify(dict)
+    return redirect("/accueil/accessNotAllowed")
+
 # suppression d'un vol
+
+
 @app.route("/suppVol/<idVol>")
 def suppVol(idVol=""):
-    if auth.checkRole("admin") :
+    if auth.checkRole("admin"):
         msg = bdd.del_volData(idVol)
-        print (msg)
+        print(msg)
         return redirect("/visualisation/suppVolOK")
     return redirect("/accueil/accessNotAllowed")
 
 # réception des données du formulaire d'ajout manuel d'un vol
+
+
 @app.route("/addVol", methods=['POST'])
 def addVol():
-    if auth.checkRole("admin") :
+    if auth.checkRole("admin"):
         aeroclub = request.form['aeroclub']
         immat = request.form['immat']
         dateDepart = request.form['dateDepart']
@@ -259,15 +306,16 @@ def addVol():
         dateArrivee = request.form['dateArrivee']
         heureArrivee = request.form['heureArrivee']
         depart = dateDepart+" " + heureDepart
-        arrivee = dateArrivee+" "+ heureArrivee
+        arrivee = dateArrivee+" " + heureArrivee
         tourpiste = int(request.form['tourpiste'])
-        msg, lastId = bdd.add_volData(aeroclub, immat, depart, arrivee, tourpiste)
+        msg, lastId = bdd.add_volData(
+            aeroclub, immat, depart, arrivee, tourpiste)
         print(msg)
         return redirect("/visualisation/" + msg)
     return redirect("/accueil/accessNotAllowed")
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    return render_template("index.html", maPage = "404.html", monTitre ="404")
-    
+    return render_template("index.html", maPage="404.html", monTitre="404")
