@@ -1,3 +1,7 @@
+# --------------------------------------------------------------------------------
+# --------------------------- Import des bibliothèques ---------------------------
+# --------------------------------------------------------------------------------
+
 from flask import Flask, render_template, session, request, redirect, jsonify
 from myApp.model import bdd as bdd
 import secrets
@@ -10,6 +14,12 @@ from os import remove
 import datetime
 import locale
 from .controller import auth, bib_vols
+
+
+# --------------------------------------------------------------------------------
+# -------------------------------- Configuration ---------------------------------
+# --------------------------------------------------------------------------------
+
 
 app = Flask(__name__)
 app.template_folder = "template"
@@ -27,7 +37,10 @@ def make_session_permanent():
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(minutes=5)
 
-# page accueil
+
+# --------------------------------------------------------------------------------
+# ------------------------------ Routage des pages -------------------------------
+# --------------------------------------------------------------------------------
 
 
 @app.route("/")
@@ -66,8 +79,6 @@ def compte(infoMsg="", pwd=""):
 def login(infoMsg=""):
     return render_template("index.html", maPage="login.html", monTitre="Se connecter", info=infoMsg)
 
-# réception des données de connexion
-
 
 @app.route("/connecter", methods=["POST"])
 def connecter():
@@ -75,7 +86,6 @@ def connecter():
     mdp = request.form['mdp']
     # vérification de paramètres en BDD
     msg, user = bdd.verifAuthData(login, mdp)
-    print([msg, user, session])
 
     try:
         # authentification réussie
@@ -119,8 +129,6 @@ def deconnecter():
 
     return redirect("/accueil/logoutOK")
 
-# réception des données du formulaire de création de compte
-
 
 @app.route("/addUser", methods=['POST'])
 def addUser():
@@ -129,7 +137,6 @@ def addUser():
         prenom = request.form["prenom"]
         mail = request.form["mail"]
         login = request.form["login"]
-        print(nom + " " + prenom + " " + mail)
         # verif si utilisateur existe déjà
         msg, count = bdd.verifDuplicateData(login, mail)
         if int(count) > 0:
@@ -140,8 +147,6 @@ def addUser():
             motPasse += ''.join(secrets.choice(alphabet))
         mdp = hashlib.sha256(motPasse.encode())
         mdpC = mdp.hexdigest()  # mot de passe chiffré
-        print(mdpC)
-        print("user password, to be sent to the user '" + login + "': " + motPasse)
         statut = int(request.form["statut"])
         a = randint(1, 16)
         avatar = "" + str(a) + ".png"
@@ -151,8 +156,6 @@ def addUser():
         return redirect("/compte/" + msg + "/" + motPasse)
     return redirect("/accueil/accessNotAllowed")
 
-# route nouveau mot de passe
-
 
 @app.route('/mdp')
 @app.route('/mdp/<infoMsg>')
@@ -160,8 +163,6 @@ def mdp(infoMsg=""):
     if auth.checkRole("member"):
         return render_template("index.html", maPage="mdp.html", monTitre="Changer le mot de passe", info=infoMsg)
     return redirect("/accueil/accessNotAllowed")
-
-# réception des données du formulaire de modification de mot de passe
 
 
 @app.route("/changeMdp", methods=['POST'])
@@ -186,28 +187,19 @@ def changeMdp():
 
         mdp = hashlib.sha256(mdp.encode())
         mdpC = mdp.hexdigest()  # mot de passe chiffré
-        print(confirmMdp)
-        print(mdpC)
-        print(session["idUser"])
 
         msg = bdd.update_userData("motPasse", mdpC, session["idUser"])
-        print(msg)
         msg2 = bdd.update_userData("newMdp", newMdp, session["idUser"])
-        print(msg2)
         session["newMdp"] = 0
         return redirect("/prevision/" + msg)
     return redirect("/accueil/accessNotAllowed")
 
 
-# route vers page upload
 @app.route('/upload')
 def upload():
     if auth.checkRole("admin"):
         return render_template("index.html", maPage="upload.html", monTitre="Page Import de données")
     return redirect("/accueil/accessNotAllowed")
-
-# gestion des fichiers excel
-# @app.route("/fichiers")
 
 
 @app.route("/fichiers/", methods=['GET', 'POST'])
@@ -226,12 +218,10 @@ def fichiers(infoMsg=""):
             APP_ROOT = os.path.dirname(os.path.abspath(__file__))
             xls = pandas.read_excel(APP_ROOT + "/files/" + file.filename)
             data = xls.to_dict('records')
-            print([file.filename, data])
             # suppression des vols sur la même plage de dates
             listDate = [d.get('depart').timestamp() for d in data]
             mindate = datetime.datetime.fromtimestamp(min(listDate))
             maxdate = datetime.datetime.fromtimestamp(max(listDate))
-            #print(datetime.datetime.fromtimestamp(mindate.strftime('%A %d %B %Y')))
             msg = bdd.reset_volData(file.filename.replace(
                 ".xlsx", ""), mindate, maxdate)
             # ajout de tous les vols dans la table vols
@@ -248,7 +238,6 @@ def fichiers(infoMsg=""):
     return redirect("/accueil/accessNotAllowed")
 
 
-# route vers page visualisation
 @app.route('/visualisation')
 @app.route('/visualisation/<infoMsg>')
 def visualisation(infoMsg=""):
@@ -282,8 +271,6 @@ def getCalendar_mvt():
         return jsonify(dict)
     return redirect("/accueil/accessNotAllowed")
 
-# suppression d'un vol
-
 
 @app.route("/suppVol/<idVol>")
 def suppVol(idVol=""):
@@ -292,8 +279,6 @@ def suppVol(idVol=""):
         print(msg)
         return redirect("/visualisation/suppVolOK")
     return redirect("/accueil/accessNotAllowed")
-
-# réception des données du formulaire d'ajout manuel d'un vol
 
 
 @app.route("/addVol", methods=['POST'])
@@ -317,5 +302,4 @@ def addVol():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
     return render_template("index.html", maPage="404.html", monTitre="404")

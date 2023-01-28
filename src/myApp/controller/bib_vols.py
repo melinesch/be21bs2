@@ -143,14 +143,14 @@ def construit_tableau_event(dico, filtre):
             mvt, tdp = dico[key]
             if filtre == 'both':
                 event = {'text': 'MVT:'+str(mvt)+'   TDP:'+str(tdp), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
-                convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
+                    convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
             elif filtre == 'tdp':
                 event = {'text': 'TDP:'+str(tdp), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
-                convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
+                    convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
             elif filtre == 'mvt':
                 event = {'text': 'MVT:'+str(mvt-tdp*NB_MVT_TDP), 'start_date': convert_date_format(key), 'end_date': convert_date_format(
-                convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
-                
+                    convert_key_date(heure_suivante(convert_date_key(key)))), 'color': couleur(mvt, tdp, False)}
+
             res.append(event)
     return res
 
@@ -205,14 +205,22 @@ def extract_bdd():
 
 
 def final_cal(filtre):
-    if not os.path.exists('cal'+filtre+'.json') or not CACHE_BASE:
+    if CACHE_BASE:
+        if not os.path.exists('cal'+filtre+'.json') or not CACHE_BASE:
+            vols = extract_bdd()
+            dico = construction_dico(vols)
+            dico = heures_concerne(dico)
+            res = construit_tableau_event(
+                dico, filtre) + construit_tableau_event_sans_vol(dico)
+            write_json(convert_json(res), 'cal'+filtre+'.json')
+        else:
+            f = open('cal'+filtre+'.json')
+            res = json.load(f)
+    else:
         vols = extract_bdd()
         dico = construction_dico(vols)
         dico = heures_concerne(dico)
         res = construit_tableau_event(
-            dico,filtre) + construit_tableau_event_sans_vol(dico)
-        write_json(convert_json(res), 'cal'+filtre+'.json')
-    else:
-        f = open('cal'+filtre+'.json')
-        res = json.load(f)
+            dico, filtre) + construit_tableau_event_sans_vol(dico)
+
     return res

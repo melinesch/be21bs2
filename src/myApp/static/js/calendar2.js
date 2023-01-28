@@ -30,8 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let select_filtre = document.querySelector("select#filtre")
         let value = select_filtre.options[select_filtre.selectedIndex].value
 
-        scheduler.clearAll();
-        
+
         if (value == 'both') {
             fetch('/getCalendar', {
                 method: 'POST',
@@ -39,35 +38,42 @@ document.addEventListener("DOMContentLoaded", function () {
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    scheduler.clearAll();
                     scheduler.parse(data, "json");
+
                 })
                 .catch((err) => console.log(err))
         }
-        else if(value=='mvt') {
+        else if (value == 'mvt') {
             fetch('/getCalendar_tdp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    scheduler.clearAll();
                     scheduler.parse(data, "json");
+
                 })
                 .catch((err) => console.log(err))
         }
-        else if(value=='tdp') {
+        else if (value == 'tdp') {
             fetch('/getCalendar_mvt', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
             })
                 .then((res) => res.json())
                 .then((data) => {
+                    scheduler.clearAll();
                     scheduler.parse(data, "json");
+                    
+
                 })
                 .catch((err) => console.log(err))
         }
-       
-        
-    
+
+
+
 
         function est_dans(mot, txt) {
             var result = txt.search(mot)
@@ -79,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        
+
         scheduler.render();
     })
 

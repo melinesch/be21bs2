@@ -42,6 +42,6 @@ BUILD_ZERO = {
     'fin': [31, 12, 2024, 19]
 }
 
-NB_MVT_TDP = 10               # Nombre de mouvement pour 1 tour de piste
-# Active ou non la mise en cache du calcul des créneaux du calendrier
-CACHE_BASE = True
+NB_MVT_TDP = 10             # Nombre de mouvement pour 1 tour de piste
+CACHE_BASE = True           # Active ou non la mise en cache du calcul des créneaux du calendrier
+
